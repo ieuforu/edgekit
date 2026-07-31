@@ -2,6 +2,12 @@
 
 全栈任务管理应用 — Cloudflare Workers + React + Drizzle ORM
 
+## ScreenShot
+
+![Task Board](screenshot/preview_1.png)
+![Create Task](screenshot/preview_2.png)
+![Task Detail](screenshot/preview_3.png)
+
 ## Tech Stack
 
 | Layer    | Tech                                   |
