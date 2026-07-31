@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.wrangler/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Cloudflare auto-generated
+apps/api/worker-configuration.d.ts
+apps/api/.wrangler/
+
+# Dev logs
+*.log
+
+# Misc
+*.tsbuildinfo
+
+# AI agent config
+AGENTS.md
+
+

@@ -1,0 +1,33 @@
+{
+  "name": "@edgekit/web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@edgekit/shared": "workspace:*",
+    "@hono/zod-validator": "^0.9.0",
+    "hono": "^4.12.12",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250729.0",
+    "@edgekit/api": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "oxlint": "^1.75.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~7.0.2",
+    "vite": "^8.2.0"
+  }
+}

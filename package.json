@@ -1,0 +1,34 @@
+{
+  "name": "edgekit",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [
+    "cloudflare",
+    "hono",
+    "react"
+  ],
+  "license": "MIT",
+  "author": "ieuforu",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api dev",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.18.0",
+      "onFail": "download"
+    }
+  }
+}

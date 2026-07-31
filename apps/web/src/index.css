@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+
+/* ─── Design Tokens ─── */
+/*
+  Typography Scale:
+    text-xs   → 0.75rem / 12px  (badges, labels)
+    text-sm   → 0.875rem / 14px (body, form inputs)
+    text-base → 1rem / 16px     (card titles)
+    text-lg   → 1.125rem / 18px (section headings)
+    text-xl   → 1.25rem / 20px  (page title small)
+    text-2xl  → 1.5rem / 24px   (page title)
+
+  Color Palette:
+    Gray 50-950: backgrounds, text, borders
+    Indigo 500-700: primary actions, focus rings
+    Green 100-700: completed state, success
+    Red 100-700: overdue, errors, destructive actions
+    White: card surfaces
+
+  Spacing:
+    Consistent use of Tailwind's 4px grid (p-1 = 4px, p-2 = 8px, etc.)
+*/
+
+/* Smooth transitions for all interactive elements */
+*,
+*::before,
+*::after {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
