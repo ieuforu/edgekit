@@ -4,9 +4,15 @@
 
 ## ScreenShot
 
-![Task Board](screenshot/preview_1.png)
-![Create Task](screenshot/preview_2.png)
-![Task Detail](screenshot/preview_3.png)
+<p align="center">
+  <img src="screenshot/preview_1.png" width="80%" />
+</p>
+<p align="center">
+  <img src="screenshot/preview_2.png" width="80%" />
+</p>
+<p align="center">
+  <img src="screenshot/preview_3.png" width="80%" />
+</p>
 
 ## Tech Stack
 
