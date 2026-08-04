@@ -20,7 +20,21 @@ async function resolveWorkspaceId(c: Context<any>): Promise<number | null> {
   const wsParam = c.req.param('workspaceId')
   if (wsParam) return parseInt(wsParam)
 
-  // 2. Try :projectId param → project → workspace
+  // 2. Try ?workspaceId query param (for GET requests)
+  const wsQuery = c.req.query('workspaceId')
+  if (wsQuery) return parseInt(wsQuery)
+
+  // 3. Try body.workspaceId (for POST requests creating in a workspace)
+  try {
+    const cloned = c.req.raw.clone()
+    const bodyForWs = (await cloned.json().catch(() => ({}))) as Record<string, unknown>
+    if (typeof bodyForWs.workspaceId === 'number') return bodyForWs.workspaceId
+    if (typeof bodyForWs.workspaceId === 'string') return parseInt(bodyForWs.workspaceId)
+  } catch {
+    // ignore
+  }
+
+  // 4. Try :projectId param → project → workspace
   const projectIdParam = c.req.param('projectId')
   if (projectIdParam) {
     const db = createDb(c.env)
@@ -51,7 +65,7 @@ async function resolveWorkspaceId(c: Context<any>): Promise<number | null> {
     }
   }
 
-  // 4. Try body.projectId
+  // 5. Try body.projectId
   try {
     const cloned = c.req.raw.clone()
     const body = (await cloned.json().catch(() => ({}))) as Record<string, unknown>
