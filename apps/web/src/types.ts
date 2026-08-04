@@ -1,1 +1,1 @@
-export type { WorkspaceType, ProjectType, IssueType, WorkspaceMemberType } from '@edgekit/shared'
+export type { WorkspaceType, ProjectType, IssueType, WorkspaceMemberType, Permission, RoleName } from '@edgekit/shared'

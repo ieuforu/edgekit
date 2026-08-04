@@ -44,8 +44,13 @@ export type {
   WorkspaceMemberListResponse,
   WorkspaceMemberCreateResponse,
   WorkspaceMemberDeleteResponse,
+  WorkspaceMemberUpdateResponse,
   ApiErrorResponse,
 } from '@edgekit/shared'
 
 export { LoginSchema, RegisterSchema } from '@edgekit/shared'
 export type { AuthResponse } from '@edgekit/shared'
+
+// Permission types
+export { can, RoleHierarchy, Permissions, AllRoles } from '@edgekit/shared'
+export type { Permission, RoleName, RoleLevel } from '@edgekit/shared'

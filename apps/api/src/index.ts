@@ -15,6 +15,9 @@ import { WorkspaceCreate } from './modules/workspace/create'
 import { WorkspaceList } from './modules/workspace/list'
 import { WorkspaceGet } from './modules/workspace/get'
 import { WorkspaceMembers } from './modules/workspace/members'
+import { InviteMember } from './modules/workspace/invite-member'
+import { RemoveMember } from './modules/workspace/remove-member'
+import { UpdateMemberRole } from './modules/workspace/update-member-role'
 
 // Project modules
 import { ProjectCreate } from './modules/project/create'
@@ -33,6 +36,7 @@ import { IssueDelete } from './modules/issue/delete'
 // Middleware
 import { authMiddleware } from './middleware/auth'
 import { requireWorkspaceRole } from './modules/auth/workspace-auth'
+import { requirePermission, requirePermissionForMethod } from './modules/auth/permissions'
 
 // ── Hono app ─────────────────────────────────────────────────────
 const app = new Hono<{ Bindings: Bindings }>().basePath('/api')
@@ -72,17 +76,28 @@ app.use('/workspaces/:workspaceId', authMiddleware, requireWorkspaceRole('VIEWER
 openapi.get('/workspaces/:workspaceId', WorkspaceGet)
 openapi.get('/workspaces/:workspaceId/members', WorkspaceMembers)
 
+// Member management — auth + workspace membership (from /:workspaceId above) + specific permissions
+// Permission middleware must be registered before route handlers
+app.use('/workspaces/:workspaceId/members', requirePermission('member:invite'))
+app.use('/workspaces/:workspaceId/members/:userId', requirePermission('member:remove'))
+app.use('/workspaces/:workspaceId/members/:userId', requirePermissionForMethod('PATCH', 'member:update-role'))
+openapi.post('/workspaces/:workspaceId/members', InviteMember)
+openapi.delete('/workspaces/:workspaceId/members/:userId', RemoveMember)
+openapi.patch('/workspaces/:workspaceId/members/:userId', UpdateMemberRole)
+
 // ═══════════════════════════════════════════════════════════════════
 // Project Routes
 // ═══════════════════════════════════════════════════════════════════
 
 // All project routes require auth; workspace membership is checked inside handlers
-// (since workspaceId comes from body/query/project lookup, not URL path)
+// Permission middleware registered before route handlers
 app.use('/projects', authMiddleware)
+app.use('/projects', requirePermissionForMethod('POST', 'project:create'))
+app.use('/projects/:projectId', authMiddleware)
+app.use('/projects/:projectId', requirePermissionForMethod('PATCH', 'project:update'))
+app.use('/projects/:projectId', requirePermissionForMethod('DELETE', 'project:delete'))
 openapi.post('/projects', ProjectCreate)
 openapi.get('/projects', ProjectList)
-
-app.use('/projects/:projectId', authMiddleware)
 openapi.get('/projects/:projectId', ProjectGet)
 openapi.patch('/projects/:projectId', ProjectUpdate)
 openapi.delete('/projects/:projectId', ProjectDelete)
@@ -92,11 +107,14 @@ openapi.delete('/projects/:projectId', ProjectDelete)
 // ═══════════════════════════════════════════════════════════════════
 
 // All issue routes require auth; workspace membership is checked inside handlers
+// Permission middleware registered before route handlers
 app.use('/issues', authMiddleware)
+app.use('/issues', requirePermissionForMethod('POST', 'issue:create'))
+app.use('/issues/:issueId', authMiddleware)
+app.use('/issues/:issueId', requirePermissionForMethod('PATCH', 'issue:update'))
+app.use('/issues/:issueId', requirePermissionForMethod('DELETE', 'issue:delete'))
 openapi.post('/issues', IssueCreate)
 openapi.get('/issues', IssueList)
-
-app.use('/issues/:issueId', authMiddleware)
 openapi.get('/issues/:issueId', IssueGet)
 openapi.patch('/issues/:issueId', IssueUpdate)
 openapi.delete('/issues/:issueId', IssueDelete)
@@ -126,6 +144,15 @@ rpcRoutes.get('/workspaces/:workspaceId', (c) =>
   c.json({ success: true, workspace: { id: 0, name: '', slug: '', ownerId: 0, role: '', memberCount: 0, createdAt: '', updatedAt: '' } }),
 )
 rpcRoutes.get('/workspaces/:workspaceId/members', (c) => c.json({ success: true, members: [] }))
+rpcRoutes.post('/workspaces/:workspaceId/members', (c) =>
+  c.json({ success: true, member: { id: 0, workspaceId: 0, userId: 0, role: '', user: { id: 0, email: '', name: '' }, createdAt: '' } }),
+)
+rpcRoutes.delete('/workspaces/:workspaceId/members/:userId', (c) =>
+  c.json({ success: true, result: { member: { id: 0, workspaceId: 0, userId: 0, role: '' } } }),
+)
+rpcRoutes.patch('/workspaces/:workspaceId/members/:userId', (c) =>
+  c.json({ success: true, member: { id: 0, workspaceId: 0, userId: 0, role: '', createdAt: '' } }),
+)
 
 // Project routes
 rpcRoutes.post('/projects', (c) =>

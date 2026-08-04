@@ -178,3 +178,19 @@ export type AuthResponse = {
     name: string
   }
 }
+
+// ─── Permissions ───
+
+export {
+  RoleHierarchy,
+  Permissions,
+  AllRoles,
+  can,
+} from './permissions'
+
+export type { Permission, RoleName, RoleLevel } from './permissions'
+
+export type WorkspaceMemberUpdateResponse = {
+  success: boolean
+  member: WorkspaceMemberType
+}
