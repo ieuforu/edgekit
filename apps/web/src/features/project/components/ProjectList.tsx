@@ -20,6 +20,7 @@ import type { ProjectType } from '@edgekit/shared'
 interface ProjectListProps {
   workspaceId: number
   onCreateClick: () => void
+  onProjectClick?: (projectId: number) => void
 }
 
 function formatDate(iso: string): string {
@@ -33,9 +34,11 @@ function formatDate(iso: string): string {
 function ProjectCard({
   project,
   onDelete,
+  onClick,
 }: {
   project: ProjectType
   onDelete: (id: number) => void
+  onClick?: () => void
 }) {
   return (
     <motion.div
@@ -43,26 +46,35 @@ function ProjectCard({
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className="group relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate text-base font-semibold text-gray-900">{project.name}</h3>
-          {project.description && (
-            <p className="mt-1 line-clamp-2 text-sm text-gray-500">{project.description}</p>
-          )}
+      {/* Clickable content area */}
+      <div
+        onClick={onClick}
+        className="cursor-pointer"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate text-base font-semibold text-gray-900">{project.name}</h3>
+            {project.description && (
+              <p className="mt-1 line-clamp-2 text-sm text-gray-500">{project.description}</p>
+            )}
+          </div>
+          <Badge
+            variant={project.status === 'ACTIVE' ? 'default' : 'secondary'}
+            className="shrink-0"
+          >
+            {project.status}
+          </Badge>
         </div>
-        <Badge
-          variant={project.status === 'ACTIVE' ? 'default' : 'secondary'}
-          className="shrink-0"
-        >
-          {project.status}
-        </Badge>
+
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-xs text-gray-400">
+            Created: {project.createdAt ? formatDate(project.createdAt) : '—'}
+          </span>
+        </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between">
-        <span className="text-xs text-gray-400">
-          Created: {project.createdAt ? formatDate(project.createdAt) : '—'}
-        </span>
-
+      {/* Non-clickable delete button — positioned absolutely so it sits outside the clickable area */}
+      <div className="absolute top-2 right-2">
         <AlertDialog>
           <AlertDialogTrigger
             render={
@@ -133,7 +145,7 @@ function EmptyProjects({ onCreateClick }: { onCreateClick: () => void }) {
   )
 }
 
-export default function ProjectList({ workspaceId, onCreateClick }: ProjectListProps) {
+export default function ProjectList({ workspaceId, onCreateClick, onProjectClick }: ProjectListProps) {
   const { data: projects, isLoading, error } = useProjects(workspaceId)
   const deleteMutation = useDeleteProject(workspaceId)
   const [deleteError, setDeleteError] = useState<string | null>(null)
@@ -192,6 +204,7 @@ export default function ProjectList({ workspaceId, onCreateClick }: ProjectListP
             key={project.id}
             project={project}
             onDelete={handleDelete}
+            onClick={onProjectClick ? () => onProjectClick(project.id!) : undefined}
           />
         ))}
       </div>
