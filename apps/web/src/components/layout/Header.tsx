@@ -1,3 +1,5 @@
+import { motion } from 'motion/react'
+
 interface HeaderProps {
   user: { id: number; email: string; name: string }
   onLogout: () => void
@@ -27,13 +29,17 @@ export default function Header({
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden text-sm text-gray-500 sm:inline">{user.email}</span>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               onClick={onLogout}
               className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Sign out
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               onClick={onCreateClick}
               className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
@@ -48,7 +54,7 @@ export default function Header({
               </svg>
               <span className="hidden sm:inline">New task</span>
               <span className="sm:hidden">New</span>
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>

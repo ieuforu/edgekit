@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { motion } from 'motion/react'
 import WorkspaceSidebar from '@/features/workspace/components/WorkspaceSidebar'
 import { WorkspaceSelector } from '@/features/workspace/components/WorkspaceSelector'
 import type { WorkspaceListItem } from '@/features/workspace/hooks'
@@ -44,12 +45,14 @@ export default function WorkspaceLayout({
               </div>
               <span className="hidden text-sm text-gray-600 sm:inline">{user.email}</span>
             </div>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               onClick={onLogout}
               className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Sign out
-            </button>
+            </motion.button>
           </div>
         </header>
 

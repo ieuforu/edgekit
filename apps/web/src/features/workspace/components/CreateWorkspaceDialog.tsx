@@ -1,4 +1,5 @@
 import { useState, useCallback, type FormEvent } from 'react'
+import { motion } from 'motion/react'
 import {
   Dialog,
   DialogContent,
@@ -116,9 +117,14 @@ export default function CreateWorkspaceDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending || !name.trim() || !slug}>
-              {isPending ? 'Creating…' : 'Create workspace'}
-            </Button>
+            <motion.div
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            >
+              <Button type="submit" disabled={isPending || !name.trim() || !slug}>
+                {isPending ? 'Creating…' : 'Create workspace'}
+              </Button>
+            </motion.div>
           </DialogFooter>
         </form>
       </DialogContent>

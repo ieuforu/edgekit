@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import type { WorkspaceListItem } from '@/features/workspace/hooks'
 
 interface IssuePageProps {
@@ -19,7 +20,11 @@ export default function IssuePage({ workspace }: IssuePageProps) {
           <h2 className="text-lg font-semibold text-gray-900">Projects</h2>
         </div>
 
-        <div className="mt-4 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50/50 px-4 py-12 text-center">
+        <motion.div
+          className="mt-4 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50/50 px-4 py-12 text-center"
+          whileHover={{ scale: 1.01 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        >
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100">
             <svg
               className="h-7 w-7 text-indigo-500"
@@ -39,7 +44,7 @@ export default function IssuePage({ workspace }: IssuePageProps) {
           <p className="mb-4 max-w-sm text-sm text-gray-500">
             Create your first project to start organizing issues and tracking work.
           </p>
-        </div>
+        </motion.div>
       </section>
     </div>
   )

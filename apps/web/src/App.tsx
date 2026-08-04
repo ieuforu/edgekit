@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { motion } from 'motion/react'
 import { useAuth } from '@/features/auth/hooks'
 import LoginPage from '@/features/auth/components/LoginPage'
 import RegisterPage from '@/features/auth/components/RegisterPage'
@@ -57,7 +58,12 @@ export default function App() {
   if (workspaces.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-        <div className="w-full max-w-md text-center">
+        <motion.div
+          className="w-full max-w-md text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <div className="mb-6 flex justify-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-100">
               <svg
@@ -96,7 +102,7 @@ export default function App() {
             onOpenChange={setCreateDialogOpen}
             onSuccess={() => {}}
           />
-        </div>
+        </motion.div>
       </div>
     )
   }

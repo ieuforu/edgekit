@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import { Separator } from '@/components/ui/separator'
 
 interface WorkspaceSidebarProps {
@@ -47,7 +48,12 @@ const navItems = [
 
 export default function WorkspaceSidebar({ workspaceName }: WorkspaceSidebarProps) {
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col border-r border-gray-200 bg-gray-50">
+    <motion.aside
+      className="flex h-full w-60 shrink-0 flex-col border-r border-gray-200 bg-gray-50"
+      initial={{ x: -240, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 200, delay: 0.1 }}
+    >
       {/* Workspace name */}
       <div className="px-4 py-4">
         <div className="flex items-center gap-2">
@@ -85,6 +91,6 @@ export default function WorkspaceSidebar({ workspaceName }: WorkspaceSidebarProp
       <div className="border-t border-gray-200 px-4 py-3">
         <p className="text-xs text-gray-400">EdgeKit</p>
       </div>
-    </aside>
+    </motion.aside>
   )
 }
