@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
-import type { AuthResponse } from '@edgekit/shared'
+import type { AuthResponse } from '@/features/auth/types'
+import { fetchCurrentUser, loginUser, registerUser, logoutUser } from '@/features/auth/api'
 
 type User = AuthResponse['user']
 
@@ -28,15 +29,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false
     ;(async () => {
       try {
-        const res = await fetch('/api/auth/me')
-        if (res.ok) {
-          const data = (await res.json()) as { success: boolean; user: User }
-          if (!cancelled && data.success) {
-            setUser(data.user)
-          }
+        const data = await fetchCurrentUser()
+        if (!cancelled && data?.success) {
+          setUser(data.user)
         }
-      } catch {
-        // Not authenticated — that's fine
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -47,36 +43,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = useCallback(async (email: string, password: string) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
-    if (!res.ok) {
-      const data = (await res.json().catch(() => null)) as { error?: string } | null
-      throw new Error(data?.error || 'Login failed')
-    }
-    const data: AuthResponse = await res.json()
-    setUser(data.user)
+    const u = await loginUser(email, password)
+    setUser(u)
   }, [])
 
   const register = useCallback(async (email: string, password: string, name: string) => {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, name }),
-    })
-    if (!res.ok) {
-      const data = (await res.json().catch(() => null)) as { error?: string } | null
-      throw new Error(data?.error || 'Registration failed')
-    }
-    const data: AuthResponse = await res.json()
-    setUser(data.user)
+    const u = await registerUser(email, password, name)
+    setUser(u)
   }, [])
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
+      await logoutUser()
     } finally {
       setUser(null)
     }

@@ -23,6 +23,7 @@ modules/
 ```
 
 **替代方案**：
+
 - A: 保持 endpoints/ 扁平结构 — 简单但难以维护
 - B: 按功能分（routes/handlers/models）— 过度抽象
 - C: 按业务模块分（采用）— 清晰的职责边界
@@ -32,11 +33,13 @@ modules/
 在业务逻辑中检查 workspace 成员身份，而非路径中间件。
 
 **原因**：
+
 - Workspace ID 在 project/issue 操作中来自 body/query/project 查找
 - 不同端点的权限要求不同（读 vs 写）
 - 需要链式查找（issue → project → workspace）
 
 **实现**：
+
 - `requireWorkspaceRole()` — 用于 URL 路径包含 workspaceId 的路由
 - `checkWorkspaceMembership()` — 用于需要动态查找 workspace 的场景
 
@@ -45,11 +48,13 @@ modules/
 Issue 列表使用内存分页。
 
 **原因**：
+
 - D1 (SQLite) 对复杂 JOIN 查询的 LIMIT/OFFSET 支持有限
 - 数据量预期不会太大（单个 workspace 的 issue 数量）
 - 实现简单，性能可接受
 
 **替代方案**：
+
 - 游标分页 — 实现复杂，当前需求不需要
 
 ## 影响

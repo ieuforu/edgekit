@@ -66,11 +66,7 @@ export class ProjectUpdate extends OpenAPIRoute {
     const db = createDb(c.env)
 
     // Check if project exists
-    const [existing] = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.id, projectId))
-      .limit(1)
+    const [existing] = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1)
 
     if (!existing) {
       return c.json({ success: false, error: 'Project not found' }, 404)

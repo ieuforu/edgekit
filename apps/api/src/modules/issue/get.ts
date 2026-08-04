@@ -67,11 +67,7 @@ export class IssueGet extends OpenAPIRoute {
     const userId = c.get('userId')
     const db = createDb(c.env)
 
-    const [issue] = await db
-      .select()
-      .from(issues)
-      .where(eq(issues.id, issueId))
-      .limit(1)
+    const [issue] = await db.select().from(issues).where(eq(issues.id, issueId)).limit(1)
 
     if (!issue) {
       return c.json({ success: false, error: 'Issue not found' }, 404)

@@ -48,11 +48,7 @@ export class IssueDelete extends OpenAPIRoute {
     const db = createDb(c.env)
 
     // Get issue before deletion
-    const [issue] = await db
-      .select()
-      .from(issues)
-      .where(eq(issues.id, issueId))
-      .limit(1)
+    const [issue] = await db.select().from(issues).where(eq(issues.id, issueId)).limit(1)
 
     if (!issue) {
       return c.json({ success: false, error: 'Issue not found' }, 404)

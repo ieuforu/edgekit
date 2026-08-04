@@ -54,10 +54,7 @@ export class WorkspaceGet extends OpenAPIRoute {
       .select()
       .from(workspaceMembers)
       .where(
-        and(
-          eq(workspaceMembers.workspaceId, workspaceId),
-          eq(workspaceMembers.userId, userId),
-        ),
+        and(eq(workspaceMembers.workspaceId, workspaceId), eq(workspaceMembers.userId, userId)),
       )
       .limit(1)
 

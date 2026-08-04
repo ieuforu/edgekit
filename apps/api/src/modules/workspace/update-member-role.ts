@@ -8,7 +8,7 @@ import type { AppContext } from '../../types'
 export class UpdateMemberRole extends OpenAPIRoute {
   schema = {
     tags: ['Workspace Members'],
-    summary: 'Update a member\'s role in a workspace',
+    summary: "Update a member's role in a workspace",
     description: 'Requires member:update-role permission (OWNER only)',
     request: {
       params: z.object({

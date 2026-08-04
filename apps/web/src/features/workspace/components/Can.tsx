@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 import { can } from '@edgekit/shared'
 import type { Permission, RoleName } from '@edgekit/shared'
-import { useRole } from '../context/RoleContext'
+import { useRole } from '@/features/workspace/context'
 
 interface CanProps {
   /** The permission to check */

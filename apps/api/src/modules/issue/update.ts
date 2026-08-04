@@ -71,11 +71,7 @@ export class IssueUpdate extends OpenAPIRoute {
     const db = createDb(c.env)
 
     // Check if issue exists
-    const [existing] = await db
-      .select()
-      .from(issues)
-      .where(eq(issues.id, issueId))
-      .limit(1)
+    const [existing] = await db.select().from(issues).where(eq(issues.id, issueId)).limit(1)
 
     if (!existing) {
       return c.json({ success: false, error: 'Issue not found' }, 404)

@@ -181,12 +181,7 @@ export type AuthResponse = {
 
 // ─── Permissions ───
 
-export {
-  RoleHierarchy,
-  Permissions,
-  AllRoles,
-  can,
-} from './permissions'
+export { RoleHierarchy, Permissions, AllRoles, can } from './permissions'
 
 export type { Permission, RoleName, RoleLevel } from './permissions'
 

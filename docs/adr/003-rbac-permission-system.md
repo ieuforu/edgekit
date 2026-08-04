@@ -35,20 +35,19 @@ Phase 2 实现了基础的 workspace 成员检查（OWNER/ADMIN/MEMBER/VIEWER）
 
 ## 权限矩阵
 
-| 权限 | OWNER | ADMIN | MEMBER | VIEWER |
-|------|-------|-------|--------|--------|
-| workspace:update | ✅ | ✅ | ❌ | ❌ |
-| workspace:delete | ✅ | ❌ | ❌ | ❌ |
-| member:invite | ✅ | ✅ | ❌ | ❌ |
-| member:remove | ✅ | ✅ | ❌ | ❌ |
-| member:update-role | ✅ | ❌ | ❌ | ❌ |
-| project:create | ✅ | ✅ | ✅ | ❌ |
-| project:update | ✅ | ✅ | ✅ | ❌ |
-| project:delete | ✅ | ✅ | ✅ | ❌ |
-| issue:create | ✅ | ✅ | ✅ | ❌ |
-| issue:update | ✅ | ✅ | ✅* | ❌ |
-| issue:delete | ✅ | ✅ | ✅ | ❌ |
-| issue:assign | ✅ | ✅ | ❌ | ❌ |
+| 权限               | OWNER | ADMIN | MEMBER | VIEWER |
+| ------------------ | ----- | ----- | ------ | ------ |
+| workspace:update   | ✅    | ✅    | ❌     | ❌     |
+| workspace:delete   | ✅    | ❌    | ❌     | ❌     |
+| member:invite      | ✅    | ✅    | ❌     | ❌     |
+| member:remove      | ✅    | ✅    | ❌     | ❌     |
+| member:update-role | ✅    | ❌    | ❌     | ❌     |
+| project:create     | ✅    | ✅    | ✅     | ❌     |
+| project:update     | ✅    | ✅    | ✅     | ❌     |
+| project:delete     | ✅    | ✅    | ✅     | ❌     |
+| issue:create       | ✅    | ✅    | ✅     | ❌     |
+| issue:update       | ✅    | ✅    | ✅*    | ❌     |
+| issue:delete       | ✅    | ✅    | ✅     | ❌     |
+| issue:assign       | ✅    | ✅    | ❌     | ❌     |
 
 *MEMBER 只能 update 自己创建的 issue
-

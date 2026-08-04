@@ -80,7 +80,10 @@ openapi.get('/workspaces/:workspaceId/members', WorkspaceMembers)
 // Permission middleware must be registered before route handlers
 app.use('/workspaces/:workspaceId/members', requirePermission('member:invite'))
 app.use('/workspaces/:workspaceId/members/:userId', requirePermission('member:remove'))
-app.use('/workspaces/:workspaceId/members/:userId', requirePermissionForMethod('PATCH', 'member:update-role'))
+app.use(
+  '/workspaces/:workspaceId/members/:userId',
+  requirePermissionForMethod('PATCH', 'member:update-role'),
+)
 openapi.post('/workspaces/:workspaceId/members', InviteMember)
 openapi.delete('/workspaces/:workspaceId/members/:userId', RemoveMember)
 openapi.patch('/workspaces/:workspaceId/members/:userId', UpdateMemberRole)
@@ -137,15 +140,40 @@ rpcRoutes.get('/auth/me', (c) => c.json({ success: true, user: { id: 0, email: '
 
 // Workspace routes
 rpcRoutes.post('/workspaces', (c) =>
-  c.json({ success: true, workspace: { id: 0, name: '', slug: '', ownerId: 0, createdAt: '', updatedAt: '' } }),
+  c.json({
+    success: true,
+    workspace: { id: 0, name: '', slug: '', ownerId: 0, createdAt: '', updatedAt: '' },
+  }),
 )
 rpcRoutes.get('/workspaces', (c) => c.json({ success: true, workspaces: [] }))
 rpcRoutes.get('/workspaces/:workspaceId', (c) =>
-  c.json({ success: true, workspace: { id: 0, name: '', slug: '', ownerId: 0, role: '', memberCount: 0, createdAt: '', updatedAt: '' } }),
+  c.json({
+    success: true,
+    workspace: {
+      id: 0,
+      name: '',
+      slug: '',
+      ownerId: 0,
+      role: '',
+      memberCount: 0,
+      createdAt: '',
+      updatedAt: '',
+    },
+  }),
 )
 rpcRoutes.get('/workspaces/:workspaceId/members', (c) => c.json({ success: true, members: [] }))
 rpcRoutes.post('/workspaces/:workspaceId/members', (c) =>
-  c.json({ success: true, member: { id: 0, workspaceId: 0, userId: 0, role: '', user: { id: 0, email: '', name: '' }, createdAt: '' } }),
+  c.json({
+    success: true,
+    member: {
+      id: 0,
+      workspaceId: 0,
+      userId: 0,
+      role: '',
+      user: { id: 0, email: '', name: '' },
+      createdAt: '',
+    },
+  }),
 )
 rpcRoutes.delete('/workspaces/:workspaceId/members/:userId', (c) =>
   c.json({ success: true, result: { member: { id: 0, workspaceId: 0, userId: 0, role: '' } } }),
@@ -156,14 +184,23 @@ rpcRoutes.patch('/workspaces/:workspaceId/members/:userId', (c) =>
 
 // Project routes
 rpcRoutes.post('/projects', (c) =>
-  c.json({ success: true, project: { id: 0, workspaceId: 0, name: '', status: 'ACTIVE', createdAt: '', updatedAt: '' } }),
+  c.json({
+    success: true,
+    project: { id: 0, workspaceId: 0, name: '', status: 'ACTIVE', createdAt: '', updatedAt: '' },
+  }),
 )
 rpcRoutes.get('/projects', (c) => c.json({ success: true, projects: [] }))
 rpcRoutes.get('/projects/:projectId', (c) =>
-  c.json({ success: true, project: { id: 0, workspaceId: 0, name: '', status: 'ACTIVE', createdAt: '', updatedAt: '' } }),
+  c.json({
+    success: true,
+    project: { id: 0, workspaceId: 0, name: '', status: 'ACTIVE', createdAt: '', updatedAt: '' },
+  }),
 )
 rpcRoutes.patch('/projects/:projectId', (c) =>
-  c.json({ success: true, project: { id: 0, workspaceId: 0, name: '', status: 'ACTIVE', createdAt: '', updatedAt: '' } }),
+  c.json({
+    success: true,
+    project: { id: 0, workspaceId: 0, name: '', status: 'ACTIVE', createdAt: '', updatedAt: '' },
+  }),
 )
 rpcRoutes.delete('/projects/:projectId', (c) =>
   c.json({ success: true, result: { project: { id: 0, workspaceId: 0, name: '' } } }),
@@ -173,22 +210,53 @@ rpcRoutes.delete('/projects/:projectId', (c) =>
 rpcRoutes.post('/issues', (c) =>
   c.json({
     success: true,
-    issue: { id: 0, projectId: 0, title: '', status: 'TODO', priority: 'NO_PRIORITY', creatorId: 0, createdAt: '', updatedAt: '' },
+    issue: {
+      id: 0,
+      projectId: 0,
+      title: '',
+      status: 'TODO',
+      priority: 'NO_PRIORITY',
+      creatorId: 0,
+      createdAt: '',
+      updatedAt: '',
+    },
   }),
 )
 rpcRoutes.get('/issues', (c) =>
-  c.json({ success: true, issues: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } }),
+  c.json({
+    success: true,
+    issues: [],
+    pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+  }),
 )
 rpcRoutes.get('/issues/:issueId', (c) =>
   c.json({
     success: true,
-    issue: { id: 0, projectId: 0, title: '', status: 'TODO', priority: 'NO_PRIORITY', creatorId: 0, createdAt: '', updatedAt: '' },
+    issue: {
+      id: 0,
+      projectId: 0,
+      title: '',
+      status: 'TODO',
+      priority: 'NO_PRIORITY',
+      creatorId: 0,
+      createdAt: '',
+      updatedAt: '',
+    },
   }),
 )
 rpcRoutes.patch('/issues/:issueId', (c) =>
   c.json({
     success: true,
-    issue: { id: 0, projectId: 0, title: '', status: 'TODO', priority: 'NO_PRIORITY', creatorId: 0, createdAt: '', updatedAt: '' },
+    issue: {
+      id: 0,
+      projectId: 0,
+      title: '',
+      status: 'TODO',
+      priority: 'NO_PRIORITY',
+      creatorId: 0,
+      createdAt: '',
+      updatedAt: '',
+    },
   }),
 )
 rpcRoutes.delete('/issues/:issueId', (c) =>

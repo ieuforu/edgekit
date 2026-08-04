@@ -109,12 +109,7 @@ async function checkPermission(c: Context<any>, permission: Permission): Promise
   const [membership] = await db
     .select()
     .from(workspaceMembers)
-    .where(
-      and(
-        eq(workspaceMembers.workspaceId, workspaceId),
-        eq(workspaceMembers.userId, userId),
-      ),
-    )
+    .where(and(eq(workspaceMembers.workspaceId, workspaceId), eq(workspaceMembers.userId, userId)))
     .limit(1)
 
   if (!membership) {

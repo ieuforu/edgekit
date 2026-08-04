@@ -82,11 +82,7 @@ export class InviteMember extends OpenAPIRoute {
     const db = createDb(c.env)
 
     // Look up the target user by email
-    const [targetUser] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1)
+    const [targetUser] = await db.select().from(users).where(eq(users.email, email)).limit(1)
 
     if (!targetUser) {
       return c.json({ success: false, error: 'No user found with that email address' }, 404)

@@ -49,11 +49,7 @@ export class ProjectGet extends OpenAPIRoute {
     const userId = c.get('userId')
     const db = createDb(c.env)
 
-    const [project] = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.id, projectId))
-      .limit(1)
+    const [project] = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1)
 
     if (!project) {
       return c.json({ success: false, error: 'Project not found' }, 404)

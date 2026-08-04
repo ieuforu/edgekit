@@ -17,8 +17,12 @@ export class IssueCreate extends OpenAPIRoute {
               projectId: z.number(),
               title: z.string().min(1).max(200),
               description: z.string().max(5000).optional(),
-              status: z.enum(['BACKLOG', 'TODO', 'IN_PROGRESS', 'DONE', 'CANCELLED']).default('TODO'),
-              priority: z.enum(['NO_PRIORITY', 'LOW', 'MEDIUM', 'HIGH', 'URGENT']).default('NO_PRIORITY'),
+              status: z
+                .enum(['BACKLOG', 'TODO', 'IN_PROGRESS', 'DONE', 'CANCELLED'])
+                .default('TODO'),
+              priority: z
+                .enum(['NO_PRIORITY', 'LOW', 'MEDIUM', 'HIGH', 'URGENT'])
+                .default('NO_PRIORITY'),
               assigneeId: z.number().optional().nullable(),
             }),
           },

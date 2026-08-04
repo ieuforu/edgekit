@@ -3,9 +3,7 @@ import { z } from 'zod'
 import { createDb } from '../../db'
 import { projects } from '../../db/schema'
 import type { AppContext } from '../../types'
-import {
-  checkWorkspaceMembership,
-} from '../auth/workspace-auth'
+import { checkWorkspaceMembership } from '../auth/workspace-auth'
 
 export class ProjectCreate extends OpenAPIRoute {
   schema = {

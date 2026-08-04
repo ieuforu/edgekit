@@ -72,9 +72,7 @@ export class RemoveMember extends OpenAPIRoute {
       return c.json({ success: false, error: 'Cannot remove the workspace owner' }, 403)
     }
 
-    await db
-      .delete(workspaceMembers)
-      .where(eq(workspaceMembers.id, membership.id))
+    await db.delete(workspaceMembers).where(eq(workspaceMembers.id, membership.id))
 
     return c.json({
       success: true,
