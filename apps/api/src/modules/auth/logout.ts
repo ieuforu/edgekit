@@ -1,10 +1,9 @@
 import { OpenAPIRoute } from 'chanfana'
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
-import type { AppContext } from '../types'
-import { createDb } from '../db'
-import { sessions } from '../db/schema'
-import { authMiddleware, type AuthEnv } from '../middleware/auth'
+import { createDb } from '../../db'
+import { sessions } from '../../db/schema'
+import type { AppContext } from '../../types'
 
 export class AuthLogout extends OpenAPIRoute {
   schema = {
@@ -25,20 +24,19 @@ export class AuthLogout extends OpenAPIRoute {
     },
   }
 
-  async handle(c: AppContext & AuthEnv) {
-    // Extract token from header or cookie to delete it
+  async handle(c: AppContext) {
     let token: string | null = null
 
     const authHeader = c.req.header('Authorization')
-    if (authHeader?.startsWith('Bearer ')) {
+    if (authHeader !== undefined && authHeader.startsWith('Bearer ')) {
       token = authHeader.slice(7)
     }
 
-    if (!token) {
+    if (token === null) {
       const cookie = c.req.header('Cookie') ?? ''
       const match = cookie.match(/session_token=([^;]+)/)
       if (match) {
-        token = match[1]
+        token = match[1] ?? null
       }
     }
 
@@ -47,7 +45,6 @@ export class AuthLogout extends OpenAPIRoute {
       await db.delete(sessions).where(eq(sessions.token, token))
     }
 
-    // Clear cookie
     c.header('Set-Cookie', 'session_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0')
 
     return c.json({

@@ -24,15 +24,15 @@ export async function authMiddleware(c: Context<AuthEnv>, next: Next) {
   let token: string | null = null
 
   const authHeader = c.req.header('Authorization')
-  if (authHeader?.startsWith('Bearer ')) {
+  if (authHeader !== undefined && authHeader.startsWith('Bearer ')) {
     token = authHeader.slice(7)
   }
 
-  if (!token) {
+  if (token === null) {
     const cookie = c.req.header('Cookie') ?? ''
     const match = cookie.match(/session_token=([^;]+)/)
     if (match) {
-      token = match[1]
+      token = match[1] ?? null
     }
   }
 

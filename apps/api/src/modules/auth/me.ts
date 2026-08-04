@@ -1,7 +1,6 @@
 import { OpenAPIRoute } from 'chanfana'
 import { z } from 'zod'
-import type { AppContext } from '../types'
-import { authMiddleware, type AuthEnv } from '../middleware/auth'
+import type { AppContext } from '../../types'
 
 export class AuthMe extends OpenAPIRoute {
   schema = {
@@ -37,10 +36,7 @@ export class AuthMe extends OpenAPIRoute {
     },
   }
 
-  // Apply auth middleware for this route
-  middlewares = [authMiddleware]
-
-  async handle(c: AppContext & AuthEnv) {
+  async handle(c: AppContext) {
     return c.json({
       success: true,
       user: {
