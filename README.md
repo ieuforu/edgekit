@@ -29,9 +29,9 @@
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) >= 18
+- [Node.js](https://nodejs.org/) >= 20
 - [pnpm](https://pnpm.io/) >= 9
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)（`npm i -g wrangler`）
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) (`npm i -g wrangler`)
 
 ### 1. Install dependencies
 
@@ -39,31 +39,59 @@
 pnpm install
 ```
 
-### 2. Create D1 database
+### 2. Initialize local D1 database
+
+The project uses Cloudflare D1 locally through Wrangler/Miniflare.
 
 ```bash
 cd apps/api
-npx wrangler d1 create edgekit-db
+
+npx wrangler d1 execute edgekit-db \
+  --local \
+  --file=./schema.sql
 ```
 
-把输出的 `database_id` 更新到 `apps/api/wrangler.jsonc` 里的 `d1_databases` 配置。
+This creates the local D1 database used during development.
 
-### 3. Initialize database tables
+> Local D1 data is stored in `.wrangler/` and is not committed to git.
 
-```bash
-cd apps/api
-npx wrangler d1 execute edgekit-db --local --file=./schema.sql
-```
+### 3. Start development servers
 
-### 4. Start dev servers
+From the project root:
 
 ```bash
 pnpm dev
 ```
 
+Services:
+
 - **Frontend**: http://localhost:5173
 - **API**: http://localhost:8787
 - **API Docs**: http://localhost:8787 (Swagger UI)
+
+## Production D1 Setup (Optional)
+
+For deploying to Cloudflare Workers, create a remote D1 database:
+
+```bash
+cd apps/api
+
+npx wrangler d1 create edgekit-db
+```
+
+Update the generated `database_id` in:
+
+```
+apps/api/wrangler.jsonc
+```
+
+Apply the schema to the remote database:
+
+```bash
+npx wrangler d1 execute edgekit-db \
+  --remote \
+  --file=./schema.sql
+```
 
 ## Project Structure
 
