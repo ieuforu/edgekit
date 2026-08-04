@@ -230,3 +230,87 @@ src/
 ## 重大决策记录
 
 详见 `docs/adr/` 目录下的 ADR 文档。
+
+---
+
+## Phase 5: TanStack Query 接入
+
+**日期**：2026-08-04
+
+**目标**：将手动 useState + fetch 模式替换为 TanStack Query，统一 Server State 管理。
+
+### 1. 依赖安装
+
+- `@tanstack/react-query ^5.101.4`
+
+### 2. QueryClientProvider
+
+- `main.tsx` 中添加 `QueryClientProvider`，包裹在 `AuthProvider` 外层
+- 默认配置：5 分钟 staleTime、1 次 retry、关闭 refetchOnWindowFocus
+
+### 3. Workspace Hooks 重写
+
+**query key factory**：
+
+```ts
+export const workspaceKeys = {
+  all: ['workspaces'] as const,
+  detail: (id: number) => ['workspaces', id] as const,
+}
+```
+
+**useWorkspaces** — `useQuery`，queryKey `['workspaces']`
+- 返回 `{ data, isLoading, error, refetch }`
+- 自动 cache，组件切换后回来不重复请求
+
+**useWorkspace(id)** — `useQuery` + `enabled` flag
+- 仅在 id 不为 null 时触发
+- 单个工作区详情查询
+
+**useCreateWorkspace** — `useMutation`
+- 返回 `{ mutate, isPending, error }`
+- 成功后自动 `invalidateQueries({ queryKey: workspaceKeys.all })`
+- 列表自动刷新，无需手动 refetch
+
+### 4. 组件适配
+
+- **App.tsx** — `data` 代替 `workspaces`，`isLoading` 代替 `loading`，移除手动 refetch 回调
+- **CreateWorkspaceDialog** — `mutate()` 代替 `await create()`，`isPending` 代替 `loading`
+
+### 5. 未修改
+
+- Auth hooks — 保持 React Context 模式（认证状态是全局 UI 状态，不是 server state）
+- 后端代码
+- UI 行为完全不变
+
+**验收结果**：
+
+- ✅ TypeScript 编译通过（零错误）
+- ✅ QueryClientProvider 正确包裹
+- ✅ useWorkspaces 使用 useQuery
+- ✅ useCreateWorkspace 使用 useMutation + cache invalidation
+- ✅ 创建 workspace 后列表自动刷新
+- ✅ 组件切换回来时数据从 cache 读取，不重复请求
+
+**技术亮点**：
+
+- query key factory 模式为后续 feature 的 query 管理提供统一规范
+- staleTime 5 分钟避免频繁请求，同时保证数据新鲜度
+- TanStack Query 的 `isPending` 区分"首次加载"和"后台刷新"（区别于 isLoading）
+
+---
+
+## 下一阶段预告
+
+**Phase 6: 高级交互**
+
+- Project / Issue CRUD UI
+- 乐观更新（Optimistic Update）
+- 拖拽排序
+- 键盘快捷键
+
+---
+
+## 重大决策记录
+
+详见 `docs/adr/` 目录下的 ADR 文档。
