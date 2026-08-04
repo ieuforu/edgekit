@@ -33,27 +33,31 @@ export default function CreateWorkspaceDialog({
 }: CreateWorkspaceDialogProps) {
   const [name, setName] = useState('')
   const [serverError, setServerError] = useState<string | null>(null)
-  const { create, loading } = useCreateWorkspace()
+  const { mutate, isPending, error: mutationError } = useCreateWorkspace()
 
   const slug = slugify(name)
 
   const handleSubmit = useCallback(
-    async (e: FormEvent) => {
+    (e: FormEvent) => {
       e.preventDefault()
       if (!name.trim() || !slug) return
 
       setServerError(null)
-      try {
-        await create(name.trim(), slug)
-        setName('')
-        onOpenChange(false)
-        onSuccess()
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to create workspace'
-        setServerError(message)
-      }
+      mutate(
+        { name: name.trim(), slug },
+        {
+          onSuccess: () => {
+            setName('')
+            onOpenChange(false)
+            onSuccess()
+          },
+          onError: (err) => {
+            setServerError(err.message || 'Failed to create workspace')
+          },
+        },
+      )
     },
-    [name, slug, create, onOpenChange, onSuccess],
+    [name, slug, mutate, onOpenChange, onSuccess],
   )
 
   const handleOpenChange = useCallback(
@@ -78,8 +82,10 @@ export default function CreateWorkspaceDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {serverError && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{serverError}</div>
+          {(serverError || mutationError) && (
+            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+              {serverError || mutationError?.message}
+            </div>
           )}
 
           <div className="space-y-2">
@@ -106,12 +112,12 @@ export default function CreateWorkspaceDialog({
               type="button"
               variant="ghost"
               onClick={() => handleOpenChange(false)}
-              disabled={loading}
+              disabled={isPending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading || !name.trim() || !slug}>
-              {loading ? 'Creating…' : 'Create workspace'}
+            <Button type="submit" disabled={isPending || !name.trim() || !slug}>
+              {isPending ? 'Creating…' : 'Create workspace'}
             </Button>
           </DialogFooter>
         </form>

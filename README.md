@@ -112,24 +112,28 @@ edgekit/
 ## Features
 
 ### Authentication & Authorization
+
 - Register / Login / Logout (JWT + HttpOnly cookies)
 - Role-Based Access Control (RBAC)
 - Four roles: OWNER, ADMIN, MEMBER, VIEWER
 - Granular permissions: workspace, project, issue, member management
 
 ### Workspace Management
+
 - Create workspaces with auto-generated slugs
 - Switch between workspaces via dropdown
 - Member invitation and role management
 - Per-workspace role-based UI controls
 
 ### Project & Issue Tracking
+
 - CRUD operations for projects and issues
 - Issue filtering (All / Active / Completed)
 - Status and priority management
 - Assignee support
 
 ### API
+
 - Automatic OpenAPI documentation (Swagger UI)
 - Hono RPC end-to-end type safety
 - Workspace-scoped data isolation

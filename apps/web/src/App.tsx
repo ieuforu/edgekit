@@ -14,8 +14,8 @@ export default function App() {
   const [authPage, setAuthPage] = useState<'login' | 'register'>('login')
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
-  // Workspace state — only fetched when user is logged in
-  const { workspaces, loading: wsLoading, refetch: refetchWorkspaces } = useWorkspaces()
+  // Workspace state — TanStack Query manages fetching + caching
+  const { data: workspaces = [], isLoading: wsLoading } = useWorkspaces()
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<number | null>(null)
 
   // Determine selected workspace: use explicit selection, else default to first
@@ -25,10 +25,6 @@ export default function App() {
   const handleSelectWorkspace = useCallback((id: number) => {
     setSelectedWorkspaceId(id)
   }, [])
-
-  const handleWorkspaceCreated = useCallback(() => {
-    void refetchWorkspaces()
-  }, [refetchWorkspaces])
 
   // 1. Auth loading
   if (authLoading) {
@@ -98,7 +94,7 @@ export default function App() {
           <CreateWorkspaceDialog
             open={createDialogOpen}
             onOpenChange={setCreateDialogOpen}
-            onSuccess={handleWorkspaceCreated}
+            onSuccess={() => {}}
           />
         </div>
       </div>

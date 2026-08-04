@@ -30,6 +30,7 @@ features/<module>/
 ```
 
 **理由**：
+
 - 模块边界清晰，修改一个 feature 不会意外影响其他模块
 - 新人可以快速定位代码（"workspace 相关的代码在哪？"→ `features/workspace/`）
 - 便于后续按 feature 做代码分割（code splitting）
@@ -39,6 +40,7 @@ features/<module>/
 选择 shadcn/ui 而非 Headless UI / Radix 直接使用 / Base UI + 全自定义。
 
 **理由**：
+
 - 项目管理工具需要大量复杂 UI 组件（Dialog、DropdownMenu、DataTable 等），全自定义成本过高
 - shadcn 代码拷入项目，完全 owned，无黑盒依赖
 - 基于 Base UI primitives，无障碍支持完善
@@ -46,13 +48,14 @@ features/<module>/
 
 ### 3. 状态分层架构
 
-| 层级 | 负责 | 方案 | Phase |
-|------|------|------|-------|
-| Server State | 工作区/项目/Issue 数据 | TanStack Query | Phase 5 |
-| Client State | UI 状态（sidebar、modal、theme） | Zustand / Jotai | Phase 6 |
-| URL State | 可分享的页面状态（filters、pagination） | TanStack Router | Phase 5 |
+| 层级         | 负责                                    | 方案            | Phase   |
+| ------------ | --------------------------------------- | --------------- | ------- |
+| Server State | 工作区/项目/Issue 数据                  | TanStack Query  | Phase 5 |
+| Client State | UI 状态（sidebar、modal、theme）        | Zustand / Jotai | Phase 6 |
+| URL State    | 可分享的页面状态（filters、pagination） | TanStack Router | Phase 5 |
 
 **理由**：
+
 - 防止 UI 状态和服务器数据混淆
 - URL State 让筛选条件可分享、可恢复
 - Server State 自动管理 cache / refetch / optimistic update
@@ -62,6 +65,7 @@ features/<module>/
 保留 `lib/api.ts` 作为单一 RPC 类型定义入口，各 feature 的 `api.ts` 通过 `fetch()` 调用。
 
 **理由**：
+
 - Hono RPC 的类型推断需要完整的路由定义，集中维护更可靠
 - 各 feature 的 api.ts 只是 fetch wrapper，关注业务逻辑而非传输层
 - Phase 5 接入 TanStack Query 后，mutation/query 结构会进一步统一
@@ -69,11 +73,13 @@ features/<module>/
 ## 后果
 
 **正面**：
+
 - 前端代码结构可扩展到 20+ feature 模块
 - shadcn 组件库覆盖 90% 常见 UI 需求
 - 状态分层为后续 TanStack Query / Router 接入铺平道路
 
 **负面**：
+
 - shadcn 组件需要手动维护升级（但代码 owned，风险可控）
 - Feature 模块间共享组件需要约定（目前放在 `components/layout/` 或 `components/ui/`）
 - 初始文件数量增加，但每个文件职责更单一
