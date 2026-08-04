@@ -115,3 +115,118 @@ Auth + Task CRUD + README + Local D1 初始化。
 ## 重大决策记录
 
 详见 `docs/adr/` 目录下的 ADR 文档。
+
+---
+
+## Phase 4: React 架构升级 + Workspace UI
+
+**日期**：2026-08-04
+
+**目标**：从 demo 项目结构升级为大型应用结构，接入 shadcn/ui，实现 Workspace 创建/选择 UI。
+
+### 1. Feature-based 目录重构
+
+从扁平结构迁移为按业务模块组织：
+
+```
+src/
+├── features/
+│   ├── auth/          # 认证（api / hooks / components）
+│   ├── workspace/     # 工作区（api / hooks / context / components）
+│   ├── project/       # 项目（骨架）
+│   └── issue/         # Issue（骨架）
+├── components/
+│   ├── ui/            # shadcn/ui 组件
+│   └── layout/        # 共享布局组件
+└── lib/
+    ├── api.ts         # Hono RPC 客户端
+    └── utils.ts       # cn() 工具函数
+```
+
+### 2. shadcn/ui 接入
+
+- 安装 shadcn/ui（base-nova 风格，lucide icons，CSS variables）
+- 新增组件：Button、Input、Dialog、DropdownMenu、Avatar、Separator
+- Auth 页面（LoginPage / RegisterPage）的 raw HTML input/button 替换为 shadcn 组件
+
+### 3. 路径别名
+
+- `tsconfig.app.json`：`@/*` → `./src/*`
+- `vite.config.ts`：`resolve.alias` 映射 `@` → `src/`
+- `package.json` imports：`#components/*`、`#lib/*`、`#hooks/*`
+
+### 4. Workspace UI
+
+#### 4.1 API 层
+
+- `features/workspace/api.ts` — fetchWorkspaces / fetchWorkspace / createWorkspace / fetchWorkspaceMembers
+
+#### 4.2 Hooks
+
+- `useWorkspaces()` — 工作区列表（useState + useCallback）
+- `useCurrentWorkspace()` — 当前选中工作区
+- `useCreateWorkspace()` — 创建工作区
+
+#### 4.3 组件
+
+- **CreateWorkspaceDialog** — shadcn Dialog，输入名称自动生成 slug，409 冲突提示
+- **WorkspaceLayout** — 完整页面布局（侧边栏 + 顶部栏 + 内容区）
+- **WorkspaceSidebar** — 240px 左侧导航栏（Projects / Members）
+- **WorkspaceSelector** — 顶部下拉切换工作区，显示角色
+
+#### 4.4 App.tsx 流程更新
+
+```
+登录 → 加载工作区列表
+  ├─ 无工作区 → "Create your first workspace" 页面
+  └─ 有工作区 → WorkspaceLayout + IssuePage
+```
+
+### 5. D1 Schema 修复
+
+- `schema.sql` 缺少 workspace 相关表（仅 users / sessions / tasks）
+- 合并 `drizzle/0001_add_workspaces_projects_issues.sql` 到 schema.sql
+- 最终 7 张表：users, sessions, tasks, workspaces, workspace_members, projects, issues
+- 重新 apply 到本地 D1
+
+### 6. base-ui 组件修复
+
+- Dialog import 路径：`@base-ui-components/react/dialog` → `@base-ui/react/dialog`
+- base-ui 命名差异：Overlay → Backdrop, Content → Popup
+- DropdownMenuLabel 需要 DropdownMenuGroup 包裹
+- WorkspaceSelector default/named export 修复
+
+**验收结果**：
+
+- ✅ TypeScript 编译通过（零错误）
+- ✅ Vite build 成功
+- ✅ 登录后显示工作区创建页面
+- ✅ 创建工作区 Dialog 正常（slug 自动生成、409 错误提示）
+- ✅ 创建后自动选中新工作区
+- ✅ Workspace 布局（侧边栏 + 顶部栏 + 内容区）
+- ✅ Workspace 下拉切换器正常
+- ✅ 所有 API 请求 200
+- ✅ 旧文件清理完毕（pages/、context/、散落的 components）
+
+**技术亮点**：
+
+- Feature-based 架构让每个业务模块自包含（api / hooks / types / components）
+- shadcn/ui 的 Dialog 基于 Base UI，需要 `data-open` / `data-closed` 属性驱动动画
+- Workspace 选择状态暂存 React state，Phase 5 将迁移到 URL State（TanStack Router）
+- Schema 合并时保留了 legacy tasks 表，避免破坏现有数据
+
+---
+
+## 下一阶段预告
+
+**Phase 5: TanStack Query 接入**
+
+- Server State 统一管理
+- 自动 cache / refetch / loading / error handling
+- 替换当前手动 useState + fetch 模式
+
+---
+
+## 重大决策记录
+
+详见 `docs/adr/` 目录下的 ADR 文档。
