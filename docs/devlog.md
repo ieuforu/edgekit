@@ -314,3 +314,78 @@ export const workspaceKeys = {
 ## 重大决策记录
 
 详见 `docs/adr/` 目录下的 ADR 文档。
+
+---
+
+## Phase 6: Motion 动效 + Project CRUD
+
+**日期**：2026-08-04
+
+**目标**：UI 动效打磨 + Project 创建/列表/删除功能 + 乐观更新。
+
+### 1. Motion 动效
+
+- 安装 `motion` 包（替代 framer-motion）
+- Dialog overlay + popup 动画（CSS transitions，Base UI 兼容）
+- App.tsx 页面过渡（AnimatePresence）
+- WorkspaceSidebar 弹簧滑入动画
+- IssuePage 卡片 hover 效果
+- 按钮按压反馈（whileTap scale）
+- WorkspaceSelector 下拉项交错入场
+
+### 2. Project CRUD UI
+
+#### API 层
+
+- `features/project/api.ts` — fetchProjects / createProject / updateProject / deleteProject
+
+#### Hooks（TanStack Query + 乐观更新）
+
+- `useProjects(workspaceId)` — useQuery 列表查询
+- `useCreateProject(workspaceId)` — useMutation，onMutate 乐观插入，onError 回滚，onSettled invalidate
+- `useDeleteProject(workspaceId)` — useMutation，onMutate 乐观移除，onError 回滚
+
+#### 组件
+
+- **CreateProjectDialog** — shadcn Dialog + Input + Textarea，创建后自动关闭
+- **ProjectList** — 响应式双列卡片网格，status badge，删除确认 AlertDialog
+- **IssuePage** — 集成 ProjectList，"New Project" 按钮
+
+#### shadcn 组件新增
+
+- AlertDialog（删除确认）
+- Badge（状态标签）
+- Textarea（项目描述输入）
+
+### 3. 权限中间件修复
+
+`resolveWorkspaceId` 新增两种解析方式：
+- `?workspaceId` query param — 支持 GET 请求（如 `/api/projects?workspaceId=1`）
+- `body.workspaceId` — 支持 POST 请求（如创建项目）
+
+**验收结果**：
+
+- ✅ TypeScript 编译通过（零错误）
+- ✅ 创建项目乐观更新瞬间显示
+- ✅ 删除项目乐观移除 + 确认弹窗
+- ✅ 创建/删除后自动 refetch 最新数据
+- ✅ 卡片 hover 动效
+- ✅ 权限中间件正确解析 workspaceId
+
+**技术亮点**：
+
+- 乐观更新的 cache 格式必须与 queryFn 返回值一致（数组 vs 对象），否则 .map 会报错
+- Base UI 的 Dialog 不支持 AnimatePresence 控制 portal 生命周期，改用 CSS transitions
+- 权限中间件需要 clone request body 来读取 workspaceId，避免消费原始 body
+
+---
+
+## 下一阶段预告
+
+**Phase 6 继续**: Issue CRUD + Kanban Board + Issue Detail Panel + Filtering
+
+---
+
+## 重大决策记录
+
+详见 `docs/adr/` 目录下的 ADR 文档。
