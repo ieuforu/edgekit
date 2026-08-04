@@ -389,3 +389,41 @@ export const workspaceKeys = {
 ## 重大决策记录
 
 详见 `docs/adr/` 目录下的 ADR 文档。
+
+---
+
+## Phase 6 续: Kanban + Issue Detail + Filtering + Router
+
+**日期**：2026-08-04（续）
+
+**状态**：基本功能完成，存在已知 bug 待修复。
+
+### 完成的功能
+
+1. **Kanban 看板** — dnd-kit 拖拽，5 列状态分组，乐观更新
+2. **Issue Detail Panel** — 右侧滑入面板，可编辑标题/描述/状态/优先级
+3. **Filtering System** — Status + Priority 筛选，URL search params 持久化
+4. **TanStack Router** — 文件路由，loader-based 重定向
+5. **权限中间件修复** — 支持 body.workspaceId 和 query param
+6. **ProjectCard 删除按钮** — 事件传播修复
+
+### 已知问题（待修复）
+
+1. **TanStack Router 导航** — URL 切换不稳定，loader 重定向有时不触发
+2. **AlertDialog 事件冒泡** — ProjectCard 的 AlertDialog 按钮仍可能触发卡片导航
+3. **Issue 创建后列表刷新** — 偶发不显示新创建的 issue
+
+### 技术笔记
+
+- TanStack Router v1 的 `loader` 是做重定向的正确方式，不要在 render body 里调 `router.navigate()`
+- `throw redirect()` 只能在 `loader` 或事件处理器里用
+- Base UI 的 Dialog/AlertDialog 渲染在 portal 里，事件冒泡需要特殊处理
+- 乐观更新的 cache 格式必须与 queryFn 返回值完全一致
+
+---
+
+## 下一步
+
+- 修复上述已知问题
+- 完善 URL State 集成（workspaceId + projectId + filters 全部走 URL）
+- Phase 7: React 性能优化
