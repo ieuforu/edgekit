@@ -1,5 +1,4 @@
 import type { Context } from 'hono'
-import { Task } from '@edgekit/shared'
 
 export type AuthVariables = {
   userId: number
@@ -13,14 +12,40 @@ export type AppContext = Context<{
 }>
 
 // Re-export shared types for use in endpoint files
-export { Task }
-export { LoginSchema, RegisterSchema } from '@edgekit/shared'
+export {
+  Workspace,
+  WorkspaceMember,
+  Project,
+  Issue,
+  WorkspaceRole,
+  ProjectStatus,
+  IssueStatus,
+  IssuePriority,
+} from '@edgekit/shared'
+
 export type {
   Bindings,
-  TaskType,
-  TaskListResponse,
-  TaskCreateResponse,
-  TaskSingleResponse,
-  TaskDeleteResponse,
+  WorkspaceType,
+  WorkspaceMemberType,
+  ProjectType,
+  IssueType,
+  WorkspaceListResponse,
+  WorkspaceCreateResponse,
+  WorkspaceSingleResponse,
+  WorkspaceDeleteResponse,
+  ProjectListResponse,
+  ProjectCreateResponse,
+  ProjectSingleResponse,
+  ProjectDeleteResponse,
+  IssueListResponse,
+  IssueCreateResponse,
+  IssueSingleResponse,
+  IssueDeleteResponse,
+  WorkspaceMemberListResponse,
+  WorkspaceMemberCreateResponse,
+  WorkspaceMemberDeleteResponse,
   ApiErrorResponse,
 } from '@edgekit/shared'
+
+export { LoginSchema, RegisterSchema } from '@edgekit/shared'
+export type { AuthResponse } from '@edgekit/shared'
