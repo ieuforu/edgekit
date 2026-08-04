@@ -1,96 +1,78 @@
 # EdgeKit
 
-全栈任务管理应用 — Cloudflare Workers + React + Drizzle ORM
-
-## ScreenShot
-
-<p align="center">
-  <img src="screenshot/preview_1.png" width="80%" />
-</p>
-<p align="center">
-  <img src="screenshot/preview_2.png" width="80%" />
-</p>
-<p align="center">
-  <img src="screenshot/preview_3.png" width="80%" />
-</p>
+A full-stack project management platform built with React, Hono and Cloudflare Workers.
 
 ## Tech Stack
 
-| Layer    | Tech                                   |
-| -------- | -------------------------------------- |
-| Frontend | React 19 + Vite + Tailwind CSS         |
-| Backend  | Hono on Cloudflare Workers             |
-| Database | Cloudflare D1 (SQLite) + Drizzle ORM   |
-| Auth     | JWT (jose) + bcrypt + HttpOnly cookies |
-| API Docs | 自动生成 Swagger UI (chanfana)         |
-| Monorepo | pnpm workspaces                        |
+### Frontend (`apps/web`)
+
+- **React 19** — UI framework
+- **Vite 8** — Build tool
+- **Tailwind CSS 4** — Styling
+- **shadcn/ui** — Component library (Base UI + Tailwind)
+- **Hono RPC** — End-to-end type-safe API client
+
+### Backend (`apps/api`)
+
+- **Hono** — HTTP framework (runs on Cloudflare Workers)
+- **Drizzle ORM** — Database toolkit
+- **Cloudflare D1** — Serverless SQL database
+- **Chanfana** — OpenAPI documentation
+- **jose** — JWT authentication
+- **bcryptjs** — Password hashing
+
+### Shared (`packages/shared`)
+
+- **Zod** — Schema validation & type inference
+- RBAC permission system
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) >= 20
-- [pnpm](https://pnpm.io/) >= 9
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) (`npm i -g wrangler`)
+- Node.js >= 20
+- pnpm >= 9
 
-### 1. Install dependencies
+### Installation
 
 ```bash
+git clone https://github.com/your-username/edgekit.git
+cd edgekit
 pnpm install
 ```
 
-### 2. Initialize local D1 database
-
-The project uses Cloudflare D1 locally through Wrangler/Miniflare.
+### Local Development
 
 ```bash
-cd apps/api
-
-npx wrangler d1 execute edgekit-db \
-  --local \
-  --file=./schema.sql
-```
-
-This creates the local D1 database used during development.
-
-> Local D1 data is stored in `.wrangler/` and is not committed to git.
-
-### 3. Start development servers
-
-From the project root:
-
-```bash
+# Start both API and Frontend
 pnpm dev
+
+# Or separately
+pnpm dev:web    # Frontend only (http://localhost:5173)
+pnpm dev:api    # Backend only (http://localhost:8787)
 ```
 
-Services:
+The frontend proxies `/api` requests to the backend automatically.
 
-- **Frontend**: http://localhost:5173
-- **API**: http://localhost:8787
-- **API Docs**: http://localhost:8787 (Swagger UI)
+### Database Setup
 
-## Production D1 Setup (Optional)
-
-For deploying to Cloudflare Workers, create a remote D1 database:
+For local development (uses Miniflare/D1 local):
 
 ```bash
 cd apps/api
-
-npx wrangler d1 create edgekit-db
+npx wrangler d1 execute edgekit-db --local --file=./schema.sql
 ```
 
-Update the generated `database_id` in:
-
-```
-apps/api/wrangler.jsonc
-```
-
-Apply the schema to the remote database:
+For production (Cloudflare Workers):
 
 ```bash
-npx wrangler d1 execute edgekit-db \
-  --remote \
-  --file=./schema.sql
+# Create remote D1 database
+npx wrangler d1 create edgekit-db
+
+# Update database_id in wrangler.jsonc
+
+# Apply schema
+npx wrangler d1 execute edgekit-db --remote --file=./schema.sql
 ```
 
 ## Project Structure
@@ -98,41 +80,85 @@ npx wrangler d1 execute edgekit-db \
 ```
 edgekit/
 ├── apps/
-│   ├── web/              # React frontend
+│   ├── web/                        # React frontend
 │   │   └── src/
-│   │       ├── components/   # UI components
-│   │       ├── pages/        # Login / Register
-│   │       ├── context/      # Auth state
-│   │       └── lib/          # API client
-│   └── api/              # Cloudflare Worker backend
-│       ├── schema.sql        # D1 表结构
-│       └── src/
-│           ├── endpoints/    # Auth + Task CRUD
-│           ├── db/           # Drizzle schema + client
-│           └── middleware/   # Auth middleware
-└── packages/
-    └── shared/           # 共享类型 & Zod schemas
+│   │       ├── features/
+│   │       │   ├── auth/           # Authentication (login, register, session)
+│   │       │   ├── workspace/      # Workspace management & layout
+│   │       │   ├── project/        # Project CRUD
+│   │       │   └── issue/          # Issue tracking & filtering
+│   │       ├── components/
+│   │       │   ├── ui/             # shadcn/ui components
+│   │       │   └── layout/         # Shared layout (Header, ErrorToast, etc.)
+│   │       └── lib/                # API client, utilities
+│   ├── api/                        # Cloudflare Worker backend
+│   │   ├── schema.sql              # D1 table definitions
+│   │   └── src/
+│   │       ├── modules/
+│   │       │   ├── auth/           # Register, login, session, permissions
+│   │       │   ├── workspace/      # CRUD + member management
+│   │       │   ├── project/        # CRUD operations
+│   │       │   └── issue/          # CRUD operations
+│   │       ├── db/                 # Drizzle schema & client
+│   │       └── middleware/         # Auth & RBAC middleware
+│   └── shared/                     # Shared types & Zod schemas
+├── docs/
+│   ├── TodoList.md                 # Development roadmap (Phase 0-9)
+│   ├── devlog.md                   # Development log
+│   └── adr/                        # Architecture Decision Records
+└── screenshot/                     # UI screenshots
 ```
 
 ## Features
 
-- 注册 / 登录 / 登出（JWT + HttpOnly cookies）
-- 任务 CRUD + 标记完成
-- 按用户隔离任务
-- 筛选栏（全部 / 进行中 / 已完成）
-- 响应式 Tailwind UI + 弹窗交互
-- 自动 OpenAPI 文档（Swagger UI）
-- Hono RPC 端到端类型安全
+### Authentication & Authorization
+- Register / Login / Logout (JWT + HttpOnly cookies)
+- Role-Based Access Control (RBAC)
+- Four roles: OWNER, ADMIN, MEMBER, VIEWER
+- Granular permissions: workspace, project, issue, member management
+
+### Workspace Management
+- Create workspaces with auto-generated slugs
+- Switch between workspaces via dropdown
+- Member invitation and role management
+- Per-workspace role-based UI controls
+
+### Project & Issue Tracking
+- CRUD operations for projects and issues
+- Issue filtering (All / Active / Completed)
+- Status and priority management
+- Assignee support
+
+### API
+- Automatic OpenAPI documentation (Swagger UI)
+- Hono RPC end-to-end type safety
+- Workspace-scoped data isolation
 
 ## Development
 
 ```bash
-pnpm dev          # API + Frontend 并行
-pnpm dev:web      # 仅前端
-pnpm dev:api      # 仅后端
+pnpm dev          # API + Frontend in parallel
+pnpm dev:web      # Frontend only
+pnpm dev:api      # Backend only
+pnpm typecheck    # TypeScript type checking
 pnpm lint         # OxLint
 pnpm fmt          # Oxfmt
 ```
+
+## Roadmap
+
+See [docs/TodoList.md](docs/TodoList.md) for the full development plan.
+
+- [x] Phase 0: Project baseline
+- [x] Phase 1: Database model upgrade
+- [x] Phase 2: Backend API refactor
+- [x] Phase 3: RBAC permission system
+- [x] Phase 4: React architecture upgrade + workspace UI
+- [ ] Phase 5: TanStack Query integration
+- [ ] Phase 6: Advanced interactions
+- [ ] Phase 7: React performance optimization
+- [ ] Phase 8: Engineering best practices
+- [ ] Phase 9: Deployment
 
 ## License
 
