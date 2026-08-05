@@ -15,7 +15,11 @@ function UserDetailRoute() {
     <UserDetailPage
       userId={Number(userId)}
       onBack={() =>
-        router.navigate({ to: '/workspace/$workspaceId/users', params: { workspaceId } })
+        router.navigate({
+          to: '/workspace/$workspaceId/users',
+          params: { workspaceId },
+          search: { userId: null },
+        })
       }
     />
   )

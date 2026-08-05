@@ -23,7 +23,7 @@ function UsersRoute() {
           router.navigate({
             to: '/workspace/$workspaceId/users',
             params: { workspaceId },
-            search: {},
+            search: { userId: null },
             replace: true,
           })
         }}

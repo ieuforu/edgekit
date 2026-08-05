@@ -29,7 +29,7 @@ const navSections: NavSection[] = [
 
 export default function WorkspaceSidebar({
   workspaceName,
-  workspaceId,
+  workspaceId: _workspaceId,
   activeNav = 'projects',
   onNavigate,
 }: WorkspaceSidebarProps) {

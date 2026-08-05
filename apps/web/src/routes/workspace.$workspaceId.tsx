@@ -29,6 +29,7 @@ function WorkspaceLayoutRoute() {
         router.navigate({
           to: '/workspace/$workspaceId/users',
           params: { workspaceId: String(workspaceId) },
+          search: { userId: null },
         })
       }
     },

@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import KanbanBoard from '@/features/issue/components/KanbanBoard'
@@ -8,7 +8,7 @@ import IssueDetailPanel from '@/features/issue/components/IssueDetailPanel'
 import CreateIssueDialog from '@/features/issue/components/CreateIssueDialog'
 import LoadingSkeleton from '@/components/layout/LoadingSkeleton'
 import { useWorkspaces } from '@/features/workspace/hooks'
-import { useIssues, useUpdateIssue, useDeleteIssue } from '@/features/issue/hooks'
+import { useIssues, useCreateIssue, useUpdateIssue, useDeleteIssue } from '@/features/issue/hooks'
 
 export const Route = createFileRoute('/workspace/$workspaceId/projects/$projectId')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -23,7 +23,7 @@ function KanbanRoute() {
   const { workspaceId: workspaceIdParam, projectId: projectIdParam } = Route.useParams()
   const projectId = Number(projectIdParam)
   const workspaceId = Number(workspaceIdParam)
-  const router = useRouter()
+  const navigate = useNavigate({ from: Route.fullPath })
   const search = Route.useSearch()
 
   const statusFilter = search.status ?? null
@@ -32,7 +32,7 @@ function KanbanRoute() {
 
   const [createIssueOpen, setCreateIssueOpen] = useState(false)
 
-  const { data: workspaces = [], isLoading: wsLoading } = useWorkspaces()
+  const { isLoading: wsLoading } = useWorkspaces()
 
   const filters = useMemo(
     () => ({
@@ -44,21 +44,27 @@ function KanbanRoute() {
   )
 
   const { data: issues, isLoading } = useIssues(filters)
+  const createIssueMutation = useCreateIssue(filters)
   const updateIssueMutation = useUpdateIssue(filters)
   const deleteIssueMutation = useDeleteIssue(filters)
 
   const selectedIssue = issues?.find((i) => i.id === selectedIssueId)
 
   const updateSearch = useCallback(
-    (patch: Record<string, unknown>) => {
-      const newSearch = { ...search, ...patch }
-      // Remove null/undefined keys
-      Object.keys(newSearch).forEach((k) => {
-        if (newSearch[k] == null) delete newSearch[k]
+    (patch: Partial<Record<string, unknown>>) => {
+      navigate({
+        search: (prev) => {
+          const merged = { ...prev, ...patch }
+          const cleaned: Record<string, unknown> = {}
+          for (const [key, value] of Object.entries(merged)) {
+            if (value != null) cleaned[key] = value
+          }
+          return cleaned as typeof prev
+        },
+        replace: true,
       })
-      router.navigate({ search: newSearch, replace: true })
     },
-    [router, search],
+    [navigate],
   )
 
   const handleIssueClick = useCallback(
@@ -108,7 +114,7 @@ function KanbanRoute() {
         <div className="flex items-center gap-3">
           <button
             onClick={() =>
-              router.navigate({
+              navigate({
                 to: '/workspace/$workspaceId',
                 params: { workspaceId: String(workspaceId) },
               })
@@ -161,6 +167,8 @@ function KanbanRoute() {
         open={createIssueOpen}
         onOpenChange={setCreateIssueOpen}
         projectId={projectId}
+        createIssue={(data) => createIssueMutation.mutate(data)}
+        isPending={createIssueMutation.isPending}
       />
     </div>
   )

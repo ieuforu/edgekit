@@ -28,7 +28,7 @@ function WorkspaceIndexRoute() {
           workspaceId: String(workspaceId),
           projectId: String(projectId),
         },
-        search: { issueId: undefined, status: undefined, priority: undefined },
+        search: { issueId: null, status: null, priority: null },
       })
     },
     [router, workspaceId],

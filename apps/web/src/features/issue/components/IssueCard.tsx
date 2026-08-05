@@ -115,7 +115,7 @@ const IssueCard = React.memo(function IssueCard({
             <AlertDialogAction
               render={<Button variant="destructive" />}
               onClick={() => {
-                onDelete?.(issue.id)
+                if (issue.id != null) onDelete?.(issue.id)
                 setShowDeleteDialog(false)
               }}
             >
