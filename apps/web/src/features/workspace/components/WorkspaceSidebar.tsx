@@ -35,23 +35,23 @@ export default function WorkspaceSidebar({
 }: WorkspaceSidebarProps) {
   return (
     <motion.aside
-      className="flex h-full w-60 shrink-0 flex-col border-r border-gray-200 bg-white"
+      className="flex h-full w-60 shrink-0 flex-col bg-[var(--sidebar)]"
       initial={{ x: -240, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ type: 'spring', damping: 25, stiffness: 200, delay: 0.1 }}
     >
       {/* Workspace header */}
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gray-100 text-xs font-semibold text-gray-500">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-xs font-semibold text-gray-600 shadow-sm">
           {workspaceName.charAt(0).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-gray-900">{workspaceName}</p>
+          <p className="truncate text-sm font-semibold text-gray-800">{workspaceName}</p>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="mx-4 h-px bg-gray-100" />
+      <div className="mx-4 h-px bg-gray-200/60" />
 
       {/* Grouped navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 custom-scrollbar">
@@ -68,10 +68,10 @@ export default function WorkspaceSidebar({
                   key={item.label}
                   disabled={!item.route}
                   onClick={() => item.route && onNavigate?.(item.route)}
-                  className={`mb-0.5 flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors duration-150 ${
+                  className={`mb-0.5 flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors duration-150 ${
                     isActive
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-500 hover:bg-white/60 hover:text-gray-700'
                   } disabled:cursor-not-allowed disabled:opacity-40`}
                 >
                   <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
@@ -84,8 +84,8 @@ export default function WorkspaceSidebar({
       </nav>
 
       {/* Bottom branding */}
-      <div className="border-t border-gray-100 px-5 py-3">
-        <p className="text-[11px] font-medium text-gray-300">EdgeKit</p>
+      <div className="border-t border-gray-200/60 px-5 py-3">
+        <p className="text-[11px] font-medium text-gray-400">EdgeKit</p>
       </div>
     </motion.aside>
   )

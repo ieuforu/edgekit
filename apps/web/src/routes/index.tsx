@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { createFileRoute, redirect, isRedirect } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth/hooks'
-import LoginPage from '@/features/auth/components/LoginPage'
-import RegisterPage from '@/features/auth/components/RegisterPage'
 import LoadingSkeleton from '@/components/layout/LoadingSkeleton'
 import CreateWorkspaceDialog from '@/features/workspace/components/CreateWorkspaceDialog'
 import { useWorkspaces } from '@/features/workspace/hooks'
@@ -13,16 +11,19 @@ export const Route = createFileRoute('/')({
   beforeLoad: async () => {
     try {
       const meRes = await fetch('/api/auth/me')
-      if (!meRes.ok) return // not logged in — show login page
+      if (!meRes.ok) {
+        throw redirect({ to: '/auth/login' })
+      }
 
       const wsRes = await fetch('/api/workspaces')
       if (!wsRes.ok) return
       const data: { workspaces?: Array<{ id: number }> } = await wsRes.json()
 
-      if (data.workspaces && data.workspaces.length > 0) {
+      const firstWorkspace = data.workspaces?.[0]
+      if (firstWorkspace) {
         throw redirect({
           to: '/workspace/$workspaceId',
-          params: { workspaceId: String(data.workspaces[0].id) },
+          params: { workspaceId: String(firstWorkspace.id) },
         })
       }
     } catch (error) {
@@ -35,12 +36,11 @@ export const Route = createFileRoute('/')({
 
 function IndexPage() {
   const { user, loading: authLoading } = useAuth()
-  const [authPage, setAuthPage] = useState<'login' | 'register'>('login')
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   const { data: workspaces = [], isLoading: wsLoading } = useWorkspaces()
 
-  if (authLoading) {
+  if (authLoading || wsLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <LoadingSkeleton />
@@ -49,14 +49,7 @@ function IndexPage() {
   }
 
   if (!user) {
-    return authPage === 'login' ? (
-      <LoginPage onSwitchToRegister={() => setAuthPage('register')} />
-    ) : (
-      <RegisterPage onSwitchToLogin={() => setAuthPage('login')} />
-    )
-  }
-
-  if (wsLoading) {
+    // This shouldn't render (beforeLoad redirects), but just in case
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <LoadingSkeleton />

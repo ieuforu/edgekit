@@ -39,13 +39,13 @@ export function generateMockIssues(count: number, projectId: number = 1): IssueT
   return Array.from({ length: count }, (_, i) => ({
     id: i + 1,
     projectId,
-    title: `${TITLES[i % TITLES.length]} #${i + 1}`,
+    title: `${TITLES[i % TITLES.length]!} #${i + 1}`,
     description:
       i % 3 === 0
         ? `Description for issue ${i + 1}. This is a detailed description of the task.`
         : null,
-    status: STATUSES[i % STATUSES.length],
-    priority: PRIORITIES[i % PRIORITIES.length],
+    status: STATUSES[i % STATUSES.length]!,
+    priority: PRIORITIES[i % PRIORITIES.length]!,
     assigneeId: i % 5 === 0 ? 1 : null,
     creatorId: 1,
     createdAt: new Date(Date.now() - i * 86400000).toISOString(),

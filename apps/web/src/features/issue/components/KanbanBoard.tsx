@@ -89,6 +89,7 @@ const KanbanColumn = React.memo(function KanbanColumn({
           >
             {virtualizer.getVirtualItems().map((virtualRow) => {
               const issue = issues[virtualRow.index]
+              if (!issue) return null
               return (
                 <div
                   key={virtualRow.key}

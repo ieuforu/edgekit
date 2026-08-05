@@ -75,10 +75,11 @@ function WorkspaceLayoutRoute() {
   )
 
   if (!currentWorkspace) {
-    if (!wsLoading && workspaces.length > 0) {
+    const firstWorkspace = workspaces[0]
+    if (!wsLoading && firstWorkspace) {
       router.navigate({
         to: '/workspace/$workspaceId',
-        params: { workspaceId: String(workspaces[0].id) },
+        params: { workspaceId: String(firstWorkspace.id) },
       })
     }
     return (

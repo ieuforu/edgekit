@@ -13,7 +13,7 @@ function StatusIndicator({ status }: { status: string }) {
     inactive: { dot: 'bg-gray-300', text: 'text-gray-400' },
     suspended: { dot: 'bg-red-400', text: 'text-gray-400' },
   }
-  const c = config[status] ?? config.inactive
+  const c = config[status ?? ''] ?? config.inactive!
 
   return (
     <span className="inline-flex w-24 shrink-0 items-center gap-1.5 text-[11px] text-gray-500 capitalize">

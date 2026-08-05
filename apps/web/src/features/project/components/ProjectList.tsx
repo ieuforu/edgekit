@@ -45,7 +45,7 @@ const ProjectCard = React.memo(function ProjectCard({
   onDelete: (id: number) => void
   onClick?: () => void
 }) {
-  const statusStyle = STATUS_STYLES[project.status] ?? STATUS_STYLES.ACTIVE
+  const statusStyle = STATUS_STYLES[project.status ?? ''] ?? STATUS_STYLES.ACTIVE!
 
   return (
     <motion.div

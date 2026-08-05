@@ -26,7 +26,7 @@ export default function WorkspaceLayout({
   children,
 }: WorkspaceLayoutProps) {
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f8f9fa]">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
       {/* Sidebar */}
       <WorkspaceSidebar
         workspaceName={workspace.name}
@@ -35,10 +35,10 @@ export default function WorkspaceLayout({
         onNavigate={onNavigate}
       />
 
-      {/* Main area */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        {/* Top header — ultra minimal */}
-        <header className="flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6">
+      {/* Main area — floating card */}
+      <div className="m-3 ml-0 flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200/60">
+        {/* Top header */}
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-gray-100 px-6">
           <div className="flex items-center gap-3">
             <WorkspaceSelector
               workspaces={workspaces}
@@ -56,7 +56,7 @@ export default function WorkspaceLayout({
             </div>
             <button
               onClick={onLogout}
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-gray-400 transition-colors duration-150 hover:bg-gray-50 hover:text-gray-600"
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-gray-400 transition-colors duration-150 hover:bg-gray-50 hover:text-gray-600"
             >
               <LogOut className="h-3 w-3" />
               Sign out
