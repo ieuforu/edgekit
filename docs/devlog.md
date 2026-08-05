@@ -542,3 +542,46 @@ Issue 详情 → ?issueId=123
 - 按指派人 / 时间筛选
 - 暗色模式
 - 响应式移动端适配
+
+---
+
+## Phase 7: React 性能优化 + Migma 风格 UI 重设计
+
+**日期**：2026-08-05
+
+### 7.1 大列表虚拟化
+- `@tanstack/react-virtual` 接入 Kanban 列内垂直滚动
+- Mock 数据生成器（10 万条 Issue）
+- Users 页面：`useInfiniteQuery` + `useVirtualizer` 无限滚动
+  - 每页 50 条，搜索防抖 250ms
+  - 10 万用户数据，只渲染可见区域
+- 用户详情页：profile card + info rows
+
+### 7.2 渲染优化
+- `React.memo` 包裹：IssueCard、KanbanColumn、ProjectCard
+- `useMemo` 缓存：issuesByStatus 分组
+- `useCallback` 稳定：所有事件处理器
+
+### 7.3 状态拆分
+- `StateViews.tsx` — 通用 LoadingView / ErrorView / EmptyView
+- ProjectList 已迁移到 StateViews
+
+### Migma 风格 UI 重设计
+- 设计系统全面更新：`#f8f9fa` 背景、白色卡片、`#e9ecef` 边框
+- 零阴影原则：全靠边框区分层级
+- 灰色系 active/hover：indigo 只用在主按钮
+- 点状状态指示器：取代彩色 badge pill
+- 白色侧边栏 + 分组导航
+- 极简 header：纯文字用户信息
+- 文字优先按钮设计
+- 大量留白 + 干净排版
+
+### 路由新增
+```
+/workspace/$wid/users         → Users 列表（无限滚动虚拟化）
+/workspace/$wid/users/$userId → User 详情页
+```
+
+### 修改的文件（18+）
+设计系统、侧边栏、Header、Project 卡片、Kanban 列、Issue 卡片、
+Detail Panel、Filter Bar、登录/注册、Users 页面、所有 shadcn 组件
