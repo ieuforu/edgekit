@@ -163,3 +163,35 @@
     @apply font-sans;
   }
 }
+
+/* Hide native scrollbar on ScrollArea viewports — prevent flash */
+[data-slot="scroll-area-viewport"] {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+[data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Custom scrollbar — hidden by default, visible on hover */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.custom-scrollbar:hover {
+  scrollbar-color: rgba(0,0,0,0.2) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

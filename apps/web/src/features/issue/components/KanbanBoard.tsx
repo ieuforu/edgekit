@@ -10,22 +10,29 @@ import {
   type DragStartEvent,
   type DragEndEvent,
 } from '@dnd-kit/core'
+
 import IssueCard from '@/features/issue/components/IssueCard'
 import type { IssueType } from '@edgekit/shared'
 
 export type IssueStatus = IssueType['status']
 
-const COLUMNS: { status: IssueStatus; label: string; tint: string }[] = [
-  { status: 'BACKLOG', label: 'Backlog', tint: 'bg-gray-50/80' },
-  { status: 'TODO', label: 'Todo', tint: 'bg-blue-50/60' },
-  { status: 'IN_PROGRESS', label: 'In Progress', tint: 'bg-amber-50/60' },
-  { status: 'DONE', label: 'Done', tint: 'bg-green-50/60' },
-  { status: 'CANCELLED', label: 'Cancelled', tint: 'bg-red-50/60' },
+const COLUMNS: { status: IssueStatus; label: string; bg: string; tint: string }[] = [
+  { status: 'BACKLOG', label: 'Backlog', bg: 'bg-gray-50/60', tint: 'border-gray-200/80' },
+  { status: 'TODO', label: 'Todo', bg: 'bg-blue-50/60', tint: 'border-blue-200/80' },
+  {
+    status: 'IN_PROGRESS',
+    label: 'In Progress',
+    bg: 'bg-amber-50/60',
+    tint: 'border-amber-200/80',
+  },
+  { status: 'DONE', label: 'Done', bg: 'bg-green-50/60', tint: 'border-green-200/80' },
+  { status: 'CANCELLED', label: 'Cancelled', bg: 'bg-red-50/60', tint: 'border-red-200/80' },
 ]
 
 function KanbanColumn({
   status,
   label,
+  bg,
   tint,
   issues,
   onIssueClick,
@@ -34,6 +41,7 @@ function KanbanColumn({
 }: {
   status: IssueStatus
   label: string
+  bg: string
   tint: string
   issues: IssueType[]
   onIssueClick: (id: number) => void
@@ -45,38 +53,36 @@ function KanbanColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`flex min-w-[280px] flex-1 flex-col rounded-xl border transition-all duration-150 ${
-        isOver
-          ? 'border-indigo-300 bg-indigo-50/50 shadow-sm'
-          : `border-gray-200/80 ${tint}`
+      className={`flex min-w-[280px] w-[280px] flex-col rounded-xl border transition-colors ${
+        isOver ? 'border-indigo-300 bg-indigo-50/50' : `border-gray-200/80 ${bg} ${tint}`
       }`}
     >
-      {/* Column header */}
       <div className="flex items-center justify-between px-3.5 py-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-          {label}
-        </h3>
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">{label}</h3>
         <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-gray-200/80 px-1.5 text-[10px] font-semibold text-gray-500">
           {issues.length}
         </span>
       </div>
 
-      {/* Cards container — scrollable */}
-      <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-2.5 pb-2.5">
-        {issues.map((issue) => (
-          <IssueCard
-            key={issue.id}
-            issue={issue}
-            onClick={() => { if (issue.id !== undefined) onIssueClick(issue.id) }}
-            onDelete={onDelete}
-          />
-        ))}
-
-        {issues.length === 0 && (
-          <div className="flex flex-1 items-center justify-center py-8 text-xs text-gray-400">
-            No issues
-          </div>
-        )}
+      {/* Cards — ScrollArea with vertical scroll, hidden until hover */}
+      <div className="custom-scrollbar flex-1 overflow-y-auto px-2.5 pb-2.5">
+        <div className="flex flex-col gap-2">
+          {issues.map((issue) => (
+            <IssueCard
+              key={issue.id}
+              issue={issue}
+              onClick={() => {
+                if (issue.id !== undefined) onIssueClick(issue.id)
+              }}
+              onDelete={onDelete}
+            />
+          ))}
+          {issues.length === 0 && (
+            <div className="flex items-center justify-center py-8 text-xs text-gray-400">
+              No issues
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -106,9 +112,7 @@ export default function KanbanBoard({
     }),
   )
 
-  const activeIssue = activeId
-    ? issues.find((i) => `issue-${i.id}` === activeId)
-    : undefined
+  const activeIssue = activeId ? issues.find((i) => `issue-${i.id}` === activeId) : undefined
 
   const issuesByStatus = COLUMNS.reduce(
     (acc, col) => {
@@ -132,39 +136,40 @@ export default function KanbanBoard({
     const issueId = Number((active.id as string).replace('issue-', ''))
     const overId = over.id as string
 
-    let newStatus: string | null = null
     if (overId.startsWith('column-')) {
-      newStatus = overId.replace('column-', '')
-    } else if (overId.startsWith('issue-')) {
-      const overIssue = issues.find((i) => i.id !== undefined && `issue-${i.id}` === overId)
-      if (overIssue) newStatus = overIssue.status
-    }
-
-    if (newStatus && !isNaN(issueId)) {
-      const issue = issues.find((i) => i.id === issueId)
-      if (issue && issue.status !== newStatus) {
-        onStatusChange(issueId, newStatus)
+      const newStatus = overId.replace('column-', '')
+      onStatusChange(issueId, newStatus)
+    } else {
+      const overIssue = issues.find((i) => `issue-${i.id}` === overId)
+      if (overIssue && overIssue.status) {
+        onStatusChange(issueId, overIssue.status)
       }
     }
   }
 
-  function handleDragOver(event: { over: { id: string | number } | null }) {
-    const overId = event.over?.id as string | undefined
-    if (overId?.startsWith('column-')) {
-      setOverColumn(overId.replace('column-', ''))
-    } else if (overId?.startsWith('issue-')) {
-      const overIssue = issues.find((i) => `issue-${i.id}` === overId)
-      setOverColumn(overIssue?.status ?? null)
-    } else {
+  function handleDragOver(event: DragEndEvent) {
+    const { over } = event
+    if (!over) {
       setOverColumn(null)
+      return
+    }
+    const overId = over.id as string
+    if (overId.startsWith('column-')) {
+      setOverColumn(overId.replace('column-', ''))
+    } else {
+      const overIssue = issues.find((i) => `issue-${i.id}` === overId)
+      if (overIssue) setOverColumn(overIssue.status)
     }
   }
 
   if (isLoading) {
     return (
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="custom-scrollbar flex gap-4 overflow-x-auto pb-4">
         {COLUMNS.map((col) => (
-          <div key={col.status} className={`min-w-[280px] flex-1 rounded-xl border border-gray-200/80 ${col.tint}`}>
+          <div
+            key={col.status}
+            className={`min-w-[280px] w-[280px] rounded-xl border ${col.tint} ${col.bg}`}
+          >
             <div className="px-3.5 py-3">
               <div className="h-3 w-20 rounded-md bg-gray-200/80" />
             </div>
@@ -187,19 +192,22 @@ export default function KanbanBoard({
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
     >
-      <div className="flex gap-4 overflow-x-auto pb-4">
-        {COLUMNS.map((col) => (
-          <KanbanColumn
-            key={col.status}
-            status={col.status}
-            label={col.label}
-            tint={col.tint}
-            issues={issuesByStatus[col.status] ?? []}
-            onIssueClick={onIssueClick}
-            onDelete={onDelete}
-            isOver={overColumn === col.status}
-          />
-        ))}
+      <div className="custom-scrollbar flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-4">
+          {COLUMNS.map((col) => (
+            <KanbanColumn
+              key={col.status}
+              status={col.status}
+              label={col.label}
+              bg={col.bg}
+              tint={col.tint}
+              issues={issuesByStatus[col.status] ?? []}
+              onIssueClick={onIssueClick}
+              onDelete={onDelete}
+              isOver={overColumn === col.status}
+            />
+          ))}
+        </div>
       </div>
 
       <DragOverlay dropAnimation={null}>

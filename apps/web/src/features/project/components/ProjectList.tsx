@@ -71,7 +71,7 @@ function ProjectCard({
       </div>
 
       {/* Delete button — visible on hover */}
-      <div className="absolute top-3 right-3">
+      <div className="absolute top-3 right-3" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
         <AlertDialog>
           <AlertDialogTrigger
             render={
