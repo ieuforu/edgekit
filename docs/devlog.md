@@ -474,3 +474,71 @@ Issue 详情 → search params ?issueId=123
 - Issue 创建后列表刷新偶发失败
 - AlertDialog 事件冒泡（ProjectCard）
 - 部分 UI 细节仍需打磨
+
+---
+
+## Phase 6: 完整交付总结
+
+**日期**：2026-08-05
+
+### 6.1 Optimistic Update
+- Issue/Project 的 create/update/delete 全部使用 TanStack Query mutation
+- onMutate → cancelQueries + snapshot + optimistic update
+- onError → rollback
+- onSettled → invalidateQueries
+
+### 6.2 Kanban Board
+- dnd-kit 拖拽（PointerSensor，8px 激活距离）
+- 5 列状态：BACKLOG / TODO / IN_PROGRESS / DONE / CANCELLED
+- 拖拽到新列自动改 status（乐观更新）
+- 列内 tinted 背景色（蓝/黄/绿/红/灰）
+- ScrollArea 用于列内垂直滚动 + 看板水平滚动
+- CSS custom-scrollbar：hover 才显示滚动条
+
+### 6.3 Issue Detail Panel
+- 右侧滑入面板（motion 动画）
+- 可编辑标题（inline）
+- 描述文本区（blur 自动保存）
+- Status / Priority 下拉切换
+- 元数据展示（创建时间、创建者）
+- AlertDialog 确认删除
+
+### 6.4 Filtering System
+- Status + Priority 筛选
+- URL search params 持久化（`?status=TODO&priority=HIGH`）
+- IssueFilterBar：筛选 chips + 清除按钮
+
+### 路由体系
+```
+/auth/login          → LoginPage
+/auth/register       → RegisterPage
+/                    → beforeLoad 重定向
+/workspace/$wid      → Layout (sidebar + header + Outlet)
+/workspace/$wid/     → ProjectList
+/workspace/$wid/projects/$pid → KanbanBoard
+Issue 详情 → ?issueId=123
+```
+
+### UI 打磨
+- Inter 字体 + CSS 变量设计系统
+- 浅色侧边栏（lucide 图标、indigo active 高亮）
+- Project 卡片（hover 微上浮、删除按钮定位修复）
+- Login/Register 居中卡片设计
+- ScrollArea / CSS custom-scrollbar
+- AlertDialog 事件冒泡修复
+
+### Bug 修复
+- beforeLoad redirect 被 catch 吞掉 → isRedirect() 函数
+- 登录/登出不跳转 → window.location.href 强刷
+- _index 路由路径错误 → 改为 index.tsx
+- Issue 创建后列表不刷新 → refetchQueries + useMemo
+- 删除按钮冒泡 → e.stopPropagation()
+- 重复 /api/auth/me 请求 → 移除 beforeLoad 中的 raw fetch
+
+### 未完成（可选后续）
+- Kanban 列内排序
+- Issue 指派人选择
+- Issue 评论 / 活动日志
+- 按指派人 / 时间筛选
+- 暗色模式
+- 响应式移动端适配
