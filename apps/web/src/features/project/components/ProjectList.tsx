@@ -77,7 +77,11 @@ const ProjectCard = React.memo(function ProjectCard({
       </div>
 
       {/* Delete button — visible on hover */}
-      <div className="absolute top-3 right-3" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+      <div
+        className="absolute top-3 right-3"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
         <AlertDialog>
           <AlertDialogTrigger
             render={
@@ -94,8 +98,8 @@ const ProjectCard = React.memo(function ProjectCard({
             <AlertDialogHeader>
               <AlertDialogTitle>Delete project</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete <strong>{project.name}</strong>? This action cannot be
-                undone.
+                Are you sure you want to delete <strong>{project.name}</strong>? This action cannot
+                be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -129,7 +133,11 @@ function EmptyProjects({ onCreateClick }: { onCreateClick: () => void }) {
   )
 }
 
-export default function ProjectList({ workspaceId, onCreateClick, onProjectClick }: ProjectListProps) {
+export default function ProjectList({
+  workspaceId,
+  onCreateClick,
+  onProjectClick,
+}: ProjectListProps) {
   const { data: projects, isLoading, error } = useProjects(workspaceId)
   const deleteMutation = useDeleteProject(workspaceId)
   const [deleteError, setDeleteError] = useState<string | null>(null)

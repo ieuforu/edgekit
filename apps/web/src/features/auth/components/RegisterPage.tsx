@@ -39,14 +39,9 @@ export default function RegisterPage({ onSwitchToLogin }: RegisterPageProps) {
         </div>
 
         {/* Card */}
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-lg border border-gray-200 bg-white p-6"
-        >
+        <form onSubmit={handleSubmit} className="rounded-lg border border-gray-200 bg-white p-6">
           {error && (
-            <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">
-              {error}
-            </div>
+            <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
           )}
 
           <div className="mb-4">
@@ -79,7 +74,10 @@ export default function RegisterPage({ onSwitchToLogin }: RegisterPageProps) {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="mb-1.5 block text-[13px] font-medium text-gray-600">
+            <label
+              htmlFor="password"
+              className="mb-1.5 block text-[13px] font-medium text-gray-600"
+            >
               Password
             </label>
             <Input

@@ -65,7 +65,9 @@ const KanbanColumn = React.memo(function KanbanColumn({
       }`}
     >
       <div className="flex items-center justify-between px-3 py-3">
-        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">{label}</h3>
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+          {label}
+        </h3>
         <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-gray-100 px-1.5 text-[10px] font-medium text-gray-400">
           {issues.length}
         </span>
@@ -248,7 +250,12 @@ export default function KanbanBoard({
       <DragOverlay dropAnimation={null}>
         {activeIssue ? (
           <div className="w-[280px] opacity-95">
-            <IssueCard issue={activeIssue} onClick={() => {}} onDelete={handleOverlayDelete} isDragging />
+            <IssueCard
+              issue={activeIssue}
+              onClick={() => {}}
+              onDelete={handleOverlayDelete}
+              isDragging
+            />
           </div>
         ) : null}
       </DragOverlay>

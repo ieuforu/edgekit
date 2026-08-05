@@ -7,9 +7,5 @@ export const Route = createFileRoute('/auth/register')({
 
 function AuthRegister() {
   const router = useRouter()
-  return (
-    <RegisterPage
-      onSwitchToLogin={() => router.navigate({ to: '/auth/login' })}
-    />
-  )
+  return <RegisterPage onSwitchToLogin={() => router.navigate({ to: '/auth/login' })} />
 }

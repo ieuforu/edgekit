@@ -54,7 +54,8 @@ export default function IssuePage({ workspace }: IssuePageProps) {
   const [selectedIssueId, setSelectedIssueId] = useState<number | null>(null)
   const [createIssueOpen, setCreateIssueOpen] = useState(false)
 
-  const { statusFilter, priorityFilter, handleStatusChange, handlePriorityChange } = useFiltersFromUrl()
+  const { statusFilter, priorityFilter, handleStatusChange, handlePriorityChange } =
+    useFiltersFromUrl()
 
   const filters = useMemo(
     () => ({
@@ -84,7 +85,10 @@ export default function IssuePage({ workspace }: IssuePageProps) {
   )
 
   const handleUpdateIssue = useCallback(
-    (issueId: number, data: { title?: string; description?: string; status?: string; priority?: string }) => {
+    (
+      issueId: number,
+      data: { title?: string; description?: string; status?: string; priority?: string },
+    ) => {
       updateIssueMutation.mutate({ issueId, ...data })
     },
     [updateIssueMutation],

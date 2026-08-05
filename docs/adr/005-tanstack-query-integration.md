@@ -19,13 +19,13 @@ Phase 4 完成了 feature-based 架构和 workspace UI，但所有数据获取�
 
 ### 替换范围
 
-| 功能 | 之前 | 之后 |
-|------|------|------|
-| 数据获取 | `useState + fetch + useEffect` | `useQuery` |
-| 数据变更 | `useState + fetch + useCallback` | `useMutation` |
-| 缓存 | 无 | 自动 query cache |
-| 刷新 | 手动 refetch | `invalidateQueries` |
-| 加载状态 | `loading: boolean` | `isLoading` / `isPending` |
+| 功能     | 之前                             | 之后                      |
+| -------- | -------------------------------- | ------------------------- |
+| 数据获取 | `useState + fetch + useEffect`   | `useQuery`                |
+| 数据变更 | `useState + fetch + useCallback` | `useMutation`             |
+| 缓存     | 无                               | 自动 query cache          |
+| 刷新     | 手动 refetch                     | `invalidateQueries`       |
+| 加载状态 | `loading: boolean`               | `isLoading` / `isPending` |
 
 ### 保留不动
 
@@ -52,11 +52,13 @@ export const workspaceKeys = {
 ## 后果
 
 **正面**：
+
 - 数据获取逻辑大幅简化，每个 hook 从 20+ 行减少到 5-10 行
 - 自动 cache 和 stale 管理，用户体验提升
 - 为 Phase 6 的乐观更新（optimistic update）提供基础设施
 - 统一的 error / loading 状态处理
 
 **负面**：
+
 - 引入 TanStack Query 依赖（但这是 React Server State 管理的事实标准）
 - 需要学习 useQuery / useMutation / invalidateQueries 的 API 模式

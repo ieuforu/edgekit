@@ -12,15 +12,84 @@ export interface User {
   bio: string
 }
 
-const DEPARTMENTS = ['Engineering', 'Design', 'Product', 'Marketing', 'Sales', 'HR', 'Finance', 'Legal']
+const DEPARTMENTS = [
+  'Engineering',
+  'Design',
+  'Product',
+  'Marketing',
+  'Sales',
+  'HR',
+  'Finance',
+  'Legal',
+]
 const ROLES = ['admin', 'member', 'viewer']
 const STATUSES: User['status'][] = ['active', 'inactive', 'suspended']
-const LOCATIONS = ['San Francisco', 'New York', 'London', 'Tokyo', 'Berlin', 'Singapore', 'Sydney', 'Toronto', 'Amsterdam', 'Remote']
-const FIRST_NAMES = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Iris', 'Jack',
-  'Kate', 'Leo', 'Mia', 'Noah', 'Olivia', 'Paul', 'Quinn', 'Rose', 'Sam', 'Tina',
-  'Uma', 'Vince', 'Wendy', 'Xavier', 'Yara', 'Zoe', 'Adam', 'Bella', 'Chris', 'Daisy']
-const LAST_NAMES = ['Smith', 'Johnson', 'Lee', 'Brown', 'Wilson', 'Moore', 'Taylor', 'Davis', 'Garcia', 'Miller',
-  'Anderson', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin', 'Thompson', 'Robinson', 'Clark', 'Lewis']
+const LOCATIONS = [
+  'San Francisco',
+  'New York',
+  'London',
+  'Tokyo',
+  'Berlin',
+  'Singapore',
+  'Sydney',
+  'Toronto',
+  'Amsterdam',
+  'Remote',
+]
+const FIRST_NAMES = [
+  'Alice',
+  'Bob',
+  'Charlie',
+  'Diana',
+  'Eve',
+  'Frank',
+  'Grace',
+  'Henry',
+  'Iris',
+  'Jack',
+  'Kate',
+  'Leo',
+  'Mia',
+  'Noah',
+  'Olivia',
+  'Paul',
+  'Quinn',
+  'Rose',
+  'Sam',
+  'Tina',
+  'Uma',
+  'Vince',
+  'Wendy',
+  'Xavier',
+  'Yara',
+  'Zoe',
+  'Adam',
+  'Bella',
+  'Chris',
+  'Daisy',
+]
+const LAST_NAMES = [
+  'Smith',
+  'Johnson',
+  'Lee',
+  'Brown',
+  'Wilson',
+  'Moore',
+  'Taylor',
+  'Davis',
+  'Garcia',
+  'Miller',
+  'Anderson',
+  'Thomas',
+  'Jackson',
+  'White',
+  'Harris',
+  'Martin',
+  'Thompson',
+  'Robinson',
+  'Clark',
+  'Lewis',
+]
 
 function randomItem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
@@ -43,7 +112,10 @@ const ALL_USERS: User[] = Array.from({ length: 100_000 }, (_, i) => {
     joinedAt: new Date(Date.now() - Math.floor(Math.random() * 365 * 5) * 86400000).toISOString(),
     lastActive: new Date(Date.now() - Math.floor(Math.random() * 30) * 86400000).toISOString(),
     location: randomItem(LOCATIONS),
-    bio: i % 3 === 0 ? `Passionate about ${randomItem(DEPARTMENTS).toLowerCase()} and building great products.` : '',
+    bio:
+      i % 3 === 0
+        ? `Passionate about ${randomItem(DEPARTMENTS).toLowerCase()} and building great products.`
+        : '',
   }
 })
 

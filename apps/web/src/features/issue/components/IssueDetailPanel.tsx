@@ -42,7 +42,10 @@ const PRIORITY_OPTIONS = [
 interface IssueDetailPanelProps {
   issue: IssueType | undefined
   onClose: () => void
-  onUpdate: (issueId: number, data: { title?: string; description?: string; status?: string; priority?: string }) => void
+  onUpdate: (
+    issueId: number,
+    data: { title?: string; description?: string; status?: string; priority?: string },
+  ) => void
   onDelete: (issueId: number) => void
 }
 
@@ -170,9 +173,13 @@ export default function IssueDetailPanel({
                 Status
               </label>
               <DropdownMenu>
-                <DropdownMenuTrigger render={<Button variant="outline" className="w-full justify-between" />}>
+                <DropdownMenuTrigger
+                  render={<Button variant="outline" className="w-full justify-between" />}
+                >
                   <span className="flex items-center gap-2">
-                    <span className={`h-1.5 w-1.5 rounded-full ${statusOption?.dot ?? 'bg-gray-400'}`} />
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${statusOption?.dot ?? 'bg-gray-400'}`}
+                    />
                     {statusLabel}
                   </span>
                 </DropdownMenuTrigger>
@@ -193,7 +200,9 @@ export default function IssueDetailPanel({
                 Priority
               </label>
               <DropdownMenu>
-                <DropdownMenuTrigger render={<Button variant="outline" className="w-full justify-between" />}>
+                <DropdownMenuTrigger
+                  render={<Button variant="outline" className="w-full justify-between" />}
+                >
                   <span className="flex items-center gap-2">
                     {priorityOption?.dot ? (
                       <span className={`h-1.5 w-1.5 rounded-full ${priorityOption.dot}`} />
@@ -203,7 +212,10 @@ export default function IssueDetailPanel({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {PRIORITY_OPTIONS.map((opt) => (
-                    <DropdownMenuItem key={opt.value} onClick={() => handlePriorityChange(opt.value)}>
+                    <DropdownMenuItem
+                      key={opt.value}
+                      onClick={() => handlePriorityChange(opt.value)}
+                    >
                       {opt.dot ? <span className={`h-1.5 w-1.5 rounded-full ${opt.dot}`} /> : null}
                       {opt.label}
                     </DropdownMenuItem>
@@ -270,11 +282,14 @@ export default function IssueDetailPanel({
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete issue</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Are you sure you want to delete <strong>{issue.title}</strong>? This cannot be undone.
+                      Are you sure you want to delete <strong>{issue.title}</strong>? This cannot be
+                      undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel render={<Button variant="ghost" />}>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel render={<Button variant="ghost" />}>
+                      Cancel
+                    </AlertDialogCancel>
                     <AlertDialogAction
                       render={<Button variant="destructive" />}
                       onClick={() => {

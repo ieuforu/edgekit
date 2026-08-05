@@ -39,11 +39,11 @@ export default function IssueFilterBar({
   const hasFilters = statusFilter !== null || priorityFilter !== null
 
   const statusLabel = statusFilter
-    ? STATUS_OPTIONS.find((s) => s.value === statusFilter)?.label ?? statusFilter
+    ? (STATUS_OPTIONS.find((s) => s.value === statusFilter)?.label ?? statusFilter)
     : null
 
   const priorityLabel = priorityFilter
-    ? PRIORITY_OPTIONS.find((p) => p.value === priorityFilter)?.label ?? priorityFilter
+    ? (PRIORITY_OPTIONS.find((p) => p.value === priorityFilter)?.label ?? priorityFilter)
     : null
 
   return (
@@ -125,7 +125,10 @@ export default function IssueFilterBar({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => { onStatusChange(null); onPriorityChange(null) }}
+            onClick={() => {
+              onStatusChange(null)
+              onPriorityChange(null)
+            }}
             className="text-gray-400 hover:text-gray-600"
           >
             Clear all

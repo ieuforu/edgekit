@@ -15,16 +15,25 @@ function WorkspaceLayoutRoute() {
   const workspaceId = Number(workspaceIdParam)
   const router = useRouter()
   const location = useLocation()
-  
+
   const activeNav = location.pathname.includes('/users') ? 'users' : 'projects'
-  
-  const handleNavigate = useCallback((route: string) => {
-    if (route === 'projects') {
-      router.navigate({ to: '/workspace/$workspaceId', params: { workspaceId: String(workspaceId) } })
-    } else if (route === 'users') {
-      router.navigate({ to: '/workspace/$workspaceId/users', params: { workspaceId: String(workspaceId) } })
-    }
-  }, [router, workspaceId])
+
+  const handleNavigate = useCallback(
+    (route: string) => {
+      if (route === 'projects') {
+        router.navigate({
+          to: '/workspace/$workspaceId',
+          params: { workspaceId: String(workspaceId) },
+        })
+      } else if (route === 'users') {
+        router.navigate({
+          to: '/workspace/$workspaceId/users',
+          params: { workspaceId: String(workspaceId) },
+        })
+      }
+    },
+    [router, workspaceId],
+  )
   const { user, loading: authLoading, logout } = useAuth()
   const { data: workspaces = [], isLoading: wsLoading } = useWorkspaces()
 
@@ -66,7 +75,10 @@ function WorkspaceLayoutRoute() {
 
   if (!currentWorkspace) {
     if (!wsLoading && workspaces.length > 0) {
-      router.navigate({ to: '/workspace/$workspaceId', params: { workspaceId: String(workspaces[0].id) } })
+      router.navigate({
+        to: '/workspace/$workspaceId',
+        params: { workspaceId: String(workspaces[0].id) },
+      })
     }
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">

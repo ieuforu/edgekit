@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": [],
+  "ignorePatterns": ["routeTree.gen.ts"],
   "semi": false,
   "singleQuote": true
 }

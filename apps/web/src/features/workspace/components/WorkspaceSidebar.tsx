@@ -23,13 +23,16 @@ const navSections: NavSection[] = [
   },
   {
     title: 'Settings',
-    items: [
-      { label: 'Settings', icon: Settings, route: null },
-    ],
+    items: [{ label: 'Settings', icon: Settings, route: null }],
   },
 ]
 
-export default function WorkspaceSidebar({ workspaceName, workspaceId, activeNav = 'projects', onNavigate }: WorkspaceSidebarProps) {
+export default function WorkspaceSidebar({
+  workspaceName,
+  workspaceId,
+  activeNav = 'projects',
+  onNavigate,
+}: WorkspaceSidebarProps) {
   return (
     <motion.aside
       className="flex h-full w-60 shrink-0 flex-col border-r border-gray-200 bg-white"

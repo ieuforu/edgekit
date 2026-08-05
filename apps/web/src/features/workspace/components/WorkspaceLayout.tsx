@@ -28,7 +28,12 @@ export default function WorkspaceLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-[#f8f9fa]">
       {/* Sidebar */}
-      <WorkspaceSidebar workspaceName={workspace.name} workspaceId={workspace.id} activeNav={activeNav} onNavigate={onNavigate} />
+      <WorkspaceSidebar
+        workspaceName={workspace.name}
+        workspaceId={workspace.id}
+        activeNav={activeNav}
+        onNavigate={onNavigate}
+      />
 
       {/* Main area */}
       <div className="flex min-w-0 flex-1 flex-col">
@@ -47,9 +52,7 @@ export default function WorkspaceLayout({
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-[11px] font-medium text-gray-500">
                 {user.name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
               </div>
-              <span className="hidden text-xs text-gray-500 sm:inline">
-                {user.email}
-              </span>
+              <span className="hidden text-xs text-gray-500 sm:inline">{user.email}</span>
             </div>
             <button
               onClick={onLogout}

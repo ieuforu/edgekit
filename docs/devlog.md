@@ -260,14 +260,17 @@ export const workspaceKeys = {
 ```
 
 **useWorkspaces** — `useQuery`，queryKey `['workspaces']`
+
 - 返回 `{ data, isLoading, error, refetch }`
 - 自动 cache，组件切换后回来不重复请求
 
 **useWorkspace(id)** — `useQuery` + `enabled` flag
+
 - 仅在 id 不为 null 时触发
 - 单个工作区详情查询
 
 **useCreateWorkspace** — `useMutation`
+
 - 返回 `{ mutate, isPending, error }`
 - 成功后自动 `invalidateQueries({ queryKey: workspaceKeys.all })`
 - 列表自动刷新，无需手动 refetch
@@ -360,6 +363,7 @@ export const workspaceKeys = {
 ### 3. 权限中间件修复
 
 `resolveWorkspaceId` 新增两种解析方式：
+
 - `?workspaceId` query param — 支持 GET 请求（如 `/api/projects?workspaceId=1`）
 - `body.workspaceId` — 支持 POST 请求（如创建项目）
 
@@ -437,6 +441,7 @@ export const workspaceKeys = {
 ### 路由重构
 
 完整路由结构：
+
 ```
 /auth/login          → LoginPage
 /auth/register       → RegisterPage
@@ -448,6 +453,7 @@ Issue 详情 → search params ?issueId=123
 ```
 
 关键修复：
+
 - `throw redirect()` 在 catch 块里被吞 → 用 `isRedirect()` 函数正确检测
 - `loader` 改为 `beforeLoad` 做认证检查（后来又移除了 beforeLoad 的 auth 检查）
 - 登录/登出后用 `window.location.href = '/'` 强刷触发路由重匹配
@@ -482,12 +488,14 @@ Issue 详情 → search params ?issueId=123
 **日期**：2026-08-05
 
 ### 6.1 Optimistic Update
+
 - Issue/Project 的 create/update/delete 全部使用 TanStack Query mutation
 - onMutate → cancelQueries + snapshot + optimistic update
 - onError → rollback
 - onSettled → invalidateQueries
 
 ### 6.2 Kanban Board
+
 - dnd-kit 拖拽（PointerSensor，8px 激活距离）
 - 5 列状态：BACKLOG / TODO / IN_PROGRESS / DONE / CANCELLED
 - 拖拽到新列自动改 status（乐观更新）
@@ -496,6 +504,7 @@ Issue 详情 → search params ?issueId=123
 - CSS custom-scrollbar：hover 才显示滚动条
 
 ### 6.3 Issue Detail Panel
+
 - 右侧滑入面板（motion 动画）
 - 可编辑标题（inline）
 - 描述文本区（blur 自动保存）
@@ -504,11 +513,13 @@ Issue 详情 → search params ?issueId=123
 - AlertDialog 确认删除
 
 ### 6.4 Filtering System
+
 - Status + Priority 筛选
 - URL search params 持久化（`?status=TODO&priority=HIGH`）
 - IssueFilterBar：筛选 chips + 清除按钮
 
 ### 路由体系
+
 ```
 /auth/login          → LoginPage
 /auth/register       → RegisterPage
@@ -520,6 +531,7 @@ Issue 详情 → ?issueId=123
 ```
 
 ### UI 打磨
+
 - Inter 字体 + CSS 变量设计系统
 - 浅色侧边栏（lucide 图标、indigo active 高亮）
 - Project 卡片（hover 微上浮、删除按钮定位修复）
@@ -528,6 +540,7 @@ Issue 详情 → ?issueId=123
 - AlertDialog 事件冒泡修复
 
 ### Bug 修复
+
 - beforeLoad redirect 被 catch 吞掉 → isRedirect() 函数
 - 登录/登出不跳转 → window.location.href 强刷
 - _index 路由路径错误 → 改为 index.tsx
@@ -536,6 +549,7 @@ Issue 详情 → ?issueId=123
 - 重复 /api/auth/me 请求 → 移除 beforeLoad 中的 raw fetch
 
 ### 未完成（可选后续）
+
 - Kanban 列内排序
 - Issue 指派人选择
 - Issue 评论 / 活动日志
@@ -550,6 +564,7 @@ Issue 详情 → ?issueId=123
 **日期**：2026-08-05
 
 ### 7.1 大列表虚拟化
+
 - `@tanstack/react-virtual` 接入 Kanban 列内垂直滚动
 - Mock 数据生成器（10 万条 Issue）
 - Users 页面：`useInfiniteQuery` + `useVirtualizer` 无限滚动
@@ -558,15 +573,18 @@ Issue 详情 → ?issueId=123
 - 用户详情页：profile card + info rows
 
 ### 7.2 渲染优化
+
 - `React.memo` 包裹：IssueCard、KanbanColumn、ProjectCard
 - `useMemo` 缓存：issuesByStatus 分组
 - `useCallback` 稳定：所有事件处理器
 
 ### 7.3 状态拆分
+
 - `StateViews.tsx` — 通用 LoadingView / ErrorView / EmptyView
 - ProjectList 已迁移到 StateViews
 
 ### Migma 风格 UI 重设计
+
 - 设计系统全面更新：`#f8f9fa` 背景、白色卡片、`#e9ecef` 边框
 - 零阴影原则：全靠边框区分层级
 - 灰色系 active/hover：indigo 只用在主按钮
@@ -577,11 +595,13 @@ Issue 详情 → ?issueId=123
 - 大量留白 + 干净排版
 
 ### 路由新增
+
 ```
 /workspace/$wid/users         → Users 列表（无限滚动虚拟化）
 /workspace/$wid/users/$userId → User 详情页
 ```
 
 ### 修改的文件（18+）
+
 设计系统、侧边栏、Header、Project 卡片、Kanban 列、Issue 卡片、
 Detail Panel、Filter Bar、登录/注册、Users 页面、所有 shadcn 组件

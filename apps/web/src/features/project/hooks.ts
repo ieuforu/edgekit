@@ -39,15 +39,15 @@ export function useCreateProject(workspaceId: number) {
       queryClient.setQueryData(projectKeys.list(workspaceId), (old: ProjectType[] | undefined) => [
         ...(old ?? []),
         {
-            id: Date.now(),
-            workspaceId,
-            name: newProject.name,
-            description: newProject.description ?? null,
-            status: 'ACTIVE' as const,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ])
+          id: Date.now(),
+          workspaceId,
+          name: newProject.name,
+          description: newProject.description ?? null,
+          status: 'ACTIVE' as const,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ])
 
       return { previous }
     },
@@ -75,7 +75,7 @@ export function useDeleteProject(workspaceId: number) {
       const previous = queryClient.getQueryData(projectKeys.list(workspaceId))
 
       queryClient.setQueryData(projectKeys.list(workspaceId), (old: ProjectType[] | undefined) =>
-        (old ?? []).filter((p) => p.id !== projectId)
+        (old ?? []).filter((p) => p.id !== projectId),
       )
 
       return { previous }

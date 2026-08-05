@@ -11,7 +11,11 @@ export async function fetchIssues(params: {
   priority?: string
   page?: number
   limit?: number
-}): Promise<IssueListResponse & { pagination?: { page: number; limit: number; total: number; totalPages: number } }> {
+}): Promise<
+  IssueListResponse & {
+    pagination?: { page: number; limit: number; total: number; totalPages: number }
+  }
+> {
   const query = new URLSearchParams()
   if (params.projectId !== undefined) query.set('projectId', String(params.projectId))
   if (params.status) query.set('status', params.status)

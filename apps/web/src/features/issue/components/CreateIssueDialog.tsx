@@ -118,7 +118,11 @@ export default function CreateIssueDialog({
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-gray-600">Status</label>
                 <DropdownMenu>
-                  <DropdownMenuTrigger render={<Button variant="outline" type="button" className="w-full justify-between" />}>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button variant="outline" type="button" className="w-full justify-between" />
+                    }
+                  >
                     {STATUS_OPTIONS.find((s) => s.value === status)?.label}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
@@ -132,9 +136,15 @@ export default function CreateIssueDialog({
               </div>
 
               <div>
-                <label className="mb-1.5 block text-[13px] font-medium text-gray-600">Priority</label>
+                <label className="mb-1.5 block text-[13px] font-medium text-gray-600">
+                  Priority
+                </label>
                 <DropdownMenu>
-                  <DropdownMenuTrigger render={<Button variant="outline" type="button" className="w-full justify-between" />}>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button variant="outline" type="button" className="w-full justify-between" />
+                    }
+                  >
                     {PRIORITY_OPTIONS.find((p) => p.value === priority)?.label}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>

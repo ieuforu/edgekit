@@ -135,8 +135,14 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
   html {
     @apply font-sans;
@@ -144,11 +150,11 @@
 }
 
 /* Hide native scrollbar on ScrollArea viewports */
-[data-slot="scroll-area-viewport"] {
+[data-slot='scroll-area-viewport'] {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-[data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+[data-slot='scroll-area-viewport']::-webkit-scrollbar {
   display: none;
 }
 
@@ -158,7 +164,7 @@
   scrollbar-color: transparent transparent;
 }
 .custom-scrollbar:hover {
-  scrollbar-color: rgba(0,0,0,0.15) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
@@ -169,7 +175,7 @@
   border-radius: 3px;
 }
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.15);
+  background: rgba(0, 0, 0, 0.15);
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
