@@ -32,3 +32,6 @@ apps/api/.wrangler/
 AGENTS.md
 
 
+
+# Husky
+.husky/_/
