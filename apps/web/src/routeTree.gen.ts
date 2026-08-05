@@ -14,7 +14,9 @@ import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as AuthRegisterRouteImport } from './routes/auth.register'
 import { Route as WorkspaceWorkspaceIdRouteImport } from './routes/workspace.$workspaceId'
 import { Route as WorkspaceWorkspaceIdIndexRouteImport } from './routes/workspace.$workspaceId.index'
+import { Route as WorkspaceWorkspaceIdUsersRouteImport } from './routes/workspace.$workspaceId.users'
 import { Route as WorkspaceWorkspaceIdProjectsProjectIdRouteImport } from './routes/workspace.$workspaceId.projects.$projectId'
+import { Route as WorkspaceWorkspaceIdUsersUserIdRouteImport } from './routes/workspace.$workspaceId.users.$userId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,11 +44,23 @@ const WorkspaceWorkspaceIdIndexRoute =
     path: '/',
     getParentRoute: () => WorkspaceWorkspaceIdRoute,
   } as any)
+const WorkspaceWorkspaceIdUsersRoute =
+  WorkspaceWorkspaceIdUsersRouteImport.update({
+    id: '/users',
+    path: '/users',
+    getParentRoute: () => WorkspaceWorkspaceIdRoute,
+  } as any)
 const WorkspaceWorkspaceIdProjectsProjectIdRoute =
   WorkspaceWorkspaceIdProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
     path: '/projects/$projectId',
     getParentRoute: () => WorkspaceWorkspaceIdRoute,
+  } as any)
+const WorkspaceWorkspaceIdUsersUserIdRoute =
+  WorkspaceWorkspaceIdUsersUserIdRouteImport.update({
+    id: '/$userId',
+    path: '/$userId',
+    getParentRoute: () => WorkspaceWorkspaceIdUsersRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -54,15 +68,19 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteWithChildren
+  '/workspace/$workspaceId/users': typeof WorkspaceWorkspaceIdUsersRouteWithChildren
   '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
   '/workspace/$workspaceId/projects/$projectId': typeof WorkspaceWorkspaceIdProjectsProjectIdRoute
+  '/workspace/$workspaceId/users/$userId': typeof WorkspaceWorkspaceIdUsersUserIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/workspace/$workspaceId/users': typeof WorkspaceWorkspaceIdUsersRouteWithChildren
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdIndexRoute
   '/workspace/$workspaceId/projects/$projectId': typeof WorkspaceWorkspaceIdProjectsProjectIdRoute
+  '/workspace/$workspaceId/users/$userId': typeof WorkspaceWorkspaceIdUsersUserIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,8 +88,10 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteWithChildren
+  '/workspace/$workspaceId/users': typeof WorkspaceWorkspaceIdUsersRouteWithChildren
   '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
   '/workspace/$workspaceId/projects/$projectId': typeof WorkspaceWorkspaceIdProjectsProjectIdRoute
+  '/workspace/$workspaceId/users/$userId': typeof WorkspaceWorkspaceIdUsersUserIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -80,23 +100,29 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/workspace/$workspaceId'
+    | '/workspace/$workspaceId/users'
     | '/workspace/$workspaceId/'
     | '/workspace/$workspaceId/projects/$projectId'
+    | '/workspace/$workspaceId/users/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/login'
     | '/auth/register'
+    | '/workspace/$workspaceId/users'
     | '/workspace/$workspaceId'
     | '/workspace/$workspaceId/projects/$projectId'
+    | '/workspace/$workspaceId/users/$userId'
   id:
     | '__root__'
     | '/'
     | '/auth/login'
     | '/auth/register'
     | '/workspace/$workspaceId'
+    | '/workspace/$workspaceId/users'
     | '/workspace/$workspaceId/'
     | '/workspace/$workspaceId/projects/$projectId'
+    | '/workspace/$workspaceId/users/$userId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -143,6 +169,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceWorkspaceIdIndexRouteImport
       parentRoute: typeof WorkspaceWorkspaceIdRoute
     }
+    '/workspace/$workspaceId/users': {
+      id: '/workspace/$workspaceId/users'
+      path: '/users'
+      fullPath: '/workspace/$workspaceId/users'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdUsersRouteImport
+      parentRoute: typeof WorkspaceWorkspaceIdRoute
+    }
     '/workspace/$workspaceId/projects/$projectId': {
       id: '/workspace/$workspaceId/projects/$projectId'
       path: '/projects/$projectId'
@@ -150,15 +183,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceWorkspaceIdProjectsProjectIdRouteImport
       parentRoute: typeof WorkspaceWorkspaceIdRoute
     }
+    '/workspace/$workspaceId/users/$userId': {
+      id: '/workspace/$workspaceId/users/$userId'
+      path: '/$userId'
+      fullPath: '/workspace/$workspaceId/users/$userId'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdUsersUserIdRouteImport
+      parentRoute: typeof WorkspaceWorkspaceIdUsersRoute
+    }
   }
 }
 
+interface WorkspaceWorkspaceIdUsersRouteChildren {
+  WorkspaceWorkspaceIdUsersUserIdRoute: typeof WorkspaceWorkspaceIdUsersUserIdRoute
+}
+
+const WorkspaceWorkspaceIdUsersRouteChildren: WorkspaceWorkspaceIdUsersRouteChildren =
+  {
+    WorkspaceWorkspaceIdUsersUserIdRoute: WorkspaceWorkspaceIdUsersUserIdRoute,
+  }
+
+const WorkspaceWorkspaceIdUsersRouteWithChildren =
+  WorkspaceWorkspaceIdUsersRoute._addFileChildren(
+    WorkspaceWorkspaceIdUsersRouteChildren,
+  )
+
 interface WorkspaceWorkspaceIdRouteChildren {
+  WorkspaceWorkspaceIdUsersRoute: typeof WorkspaceWorkspaceIdUsersRouteWithChildren
   WorkspaceWorkspaceIdIndexRoute: typeof WorkspaceWorkspaceIdIndexRoute
   WorkspaceWorkspaceIdProjectsProjectIdRoute: typeof WorkspaceWorkspaceIdProjectsProjectIdRoute
 }
 
 const WorkspaceWorkspaceIdRouteChildren: WorkspaceWorkspaceIdRouteChildren = {
+  WorkspaceWorkspaceIdUsersRoute: WorkspaceWorkspaceIdUsersRouteWithChildren,
   WorkspaceWorkspaceIdIndexRoute: WorkspaceWorkspaceIdIndexRoute,
   WorkspaceWorkspaceIdProjectsProjectIdRoute:
     WorkspaceWorkspaceIdProjectsProjectIdRoute,

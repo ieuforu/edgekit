@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import React, { useState, useRef, useMemo, useCallback } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import {
   DndContext,
   DragOverlay,
@@ -16,24 +17,17 @@ import type { IssueType } from '@edgekit/shared'
 
 export type IssueStatus = IssueType['status']
 
-const COLUMNS: { status: IssueStatus; label: string; bg: string; tint: string }[] = [
-  { status: 'BACKLOG', label: 'Backlog', bg: 'bg-gray-50/60', tint: 'border-gray-200/80' },
-  { status: 'TODO', label: 'Todo', bg: 'bg-blue-50/60', tint: 'border-blue-200/80' },
-  {
-    status: 'IN_PROGRESS',
-    label: 'In Progress',
-    bg: 'bg-amber-50/60',
-    tint: 'border-amber-200/80',
-  },
-  { status: 'DONE', label: 'Done', bg: 'bg-green-50/60', tint: 'border-green-200/80' },
-  { status: 'CANCELLED', label: 'Cancelled', bg: 'bg-red-50/60', tint: 'border-red-200/80' },
+const COLUMNS: { status: IssueStatus; label: string }[] = [
+  { status: 'BACKLOG', label: 'Backlog' },
+  { status: 'TODO', label: 'Todo' },
+  { status: 'IN_PROGRESS', label: 'In Progress' },
+  { status: 'DONE', label: 'Done' },
+  { status: 'CANCELLED', label: 'Cancelled' },
 ]
 
-function KanbanColumn({
+const KanbanColumn = React.memo(function KanbanColumn({
   status,
   label,
-  bg,
-  tint,
   issues,
   onIssueClick,
   onDelete,
@@ -41,52 +35,85 @@ function KanbanColumn({
 }: {
   status: IssueStatus
   label: string
-  bg: string
-  tint: string
   issues: IssueType[]
   onIssueClick: (id: number) => void
   onDelete?: (issueId: number) => void
   isOver: boolean
 }) {
+  const parentRef = useRef<HTMLDivElement>(null)
   const { setNodeRef } = useDroppable({ id: `column-${status}` })
+
+  const handleIssueClick = useCallback(
+    (id: number) => {
+      if (id !== undefined) onIssueClick(id)
+    },
+    [onIssueClick],
+  )
+
+  const virtualizer = useVirtualizer({
+    count: issues.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 80,
+    overscan: 5,
+  })
 
   return (
     <div
       ref={setNodeRef}
-      className={`flex min-w-[280px] w-[280px] flex-col rounded-xl border transition-colors ${
-        isOver ? 'border-indigo-300 bg-indigo-50/50' : `border-gray-200/80 ${bg} ${tint}`
+      className={`flex min-w-[280px] w-[280px] flex-col rounded-lg border transition-colors ${
+        isOver ? 'border-indigo-300 bg-indigo-50/30' : 'border-gray-200 bg-white'
       }`}
     >
-      <div className="flex items-center justify-between px-3.5 py-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">{label}</h3>
-        <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-gray-200/80 px-1.5 text-[10px] font-semibold text-gray-500">
+      <div className="flex items-center justify-between px-3 py-3">
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">{label}</h3>
+        <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-gray-100 px-1.5 text-[10px] font-medium text-gray-400">
           {issues.length}
         </span>
       </div>
 
-      {/* Cards — ScrollArea with vertical scroll, hidden until hover */}
-      <div className="custom-scrollbar flex-1 overflow-y-auto px-2.5 pb-2.5">
-        <div className="flex flex-col gap-2">
-          {issues.map((issue) => (
-            <IssueCard
-              key={issue.id}
-              issue={issue}
-              onClick={() => {
-                if (issue.id !== undefined) onIssueClick(issue.id)
-              }}
-              onDelete={onDelete}
-            />
-          ))}
-          {issues.length === 0 && (
-            <div className="flex items-center justify-center py-8 text-xs text-gray-400">
-              No issues
-            </div>
-          )}
-        </div>
+      {/* Cards — virtualized scroll */}
+      <div ref={parentRef} className="custom-scrollbar flex-1 overflow-y-auto px-2.5 pb-2.5">
+        {issues.length === 0 ? (
+          <div className="flex items-center justify-center py-8 text-xs text-gray-300">
+            No issues
+          </div>
+        ) : (
+          <div
+            style={{
+              height: virtualizer.getTotalSize(),
+              position: 'relative',
+              width: '100%',
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualRow) => {
+              const issue = issues[virtualRow.index]
+              return (
+                <div
+                  key={virtualRow.key}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  <div className="mb-2">
+                    <IssueCard
+                      issue={issue}
+                      onClick={() => handleIssueClick(issue.id!)}
+                      onDelete={onDelete}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
     </div>
   )
-}
+})
 
 interface KanbanBoardProps {
   issues: IssueType[]
@@ -114,68 +141,78 @@ export default function KanbanBoard({
 
   const activeIssue = activeId ? issues.find((i) => `issue-${i.id}` === activeId) : undefined
 
-  const issuesByStatus = COLUMNS.reduce(
-    (acc, col) => {
-      acc[col.status] = issues.filter((i) => i.status === col.status)
-      return acc
+  const issuesByStatus = useMemo(() => {
+    return COLUMNS.reduce(
+      (acc, col) => {
+        acc[col.status] = issues.filter((i) => i.status === col.status)
+        return acc
+      },
+      {} as Record<IssueStatus, IssueType[]>,
+    )
+  }, [issues])
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setActiveId(event.active.id as string)
+  }, [])
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      setActiveId(null)
+      setOverColumn(null)
+
+      const { active, over } = event
+      if (!over) return
+
+      const issueId = Number((active.id as string).replace('issue-', ''))
+      const overId = over.id as string
+
+      if (overId.startsWith('column-')) {
+        const newStatus = overId.replace('column-', '')
+        onStatusChange(issueId, newStatus)
+      } else {
+        const overIssue = issues.find((i) => `issue-${i.id}` === overId)
+        if (overIssue && overIssue.status) {
+          onStatusChange(issueId, overIssue.status)
+        }
+      }
     },
-    {} as Record<IssueStatus, IssueType[]>,
+    [issues, onStatusChange],
   )
 
-  function handleDragStart(event: DragStartEvent) {
-    setActiveId(event.active.id as string)
-  }
-
-  function handleDragEnd(event: DragEndEvent) {
-    setActiveId(null)
-    setOverColumn(null)
-
-    const { active, over } = event
-    if (!over) return
-
-    const issueId = Number((active.id as string).replace('issue-', ''))
-    const overId = over.id as string
-
-    if (overId.startsWith('column-')) {
-      const newStatus = overId.replace('column-', '')
-      onStatusChange(issueId, newStatus)
-    } else {
-      const overIssue = issues.find((i) => `issue-${i.id}` === overId)
-      if (overIssue && overIssue.status) {
-        onStatusChange(issueId, overIssue.status)
+  const handleDragOver = useCallback(
+    (event: DragEndEvent) => {
+      const { over } = event
+      if (!over) {
+        setOverColumn(null)
+        return
       }
-    }
-  }
+      const overId = over.id as string
+      if (overId.startsWith('column-')) {
+        setOverColumn(overId.replace('column-', ''))
+      } else {
+        const overIssue = issues.find((i) => `issue-${i.id}` === overId)
+        if (overIssue) setOverColumn(overIssue.status)
+      }
+    },
+    [issues],
+  )
 
-  function handleDragOver(event: DragEndEvent) {
-    const { over } = event
-    if (!over) {
-      setOverColumn(null)
-      return
-    }
-    const overId = over.id as string
-    if (overId.startsWith('column-')) {
-      setOverColumn(overId.replace('column-', ''))
-    } else {
-      const overIssue = issues.find((i) => `issue-${i.id}` === overId)
-      if (overIssue) setOverColumn(overIssue.status)
-    }
-  }
+  const handleOverlayDelete = useCallback(() => {}, [])
 
   if (isLoading) {
     return (
-      <div className="custom-scrollbar flex gap-4 overflow-x-auto pb-4">
+      <div className="custom-scrollbar flex gap-3 overflow-x-auto pb-4">
         {COLUMNS.map((col) => (
           <div
             key={col.status}
-            className={`min-w-[280px] w-[280px] rounded-xl border ${col.tint} ${col.bg}`}
+            className="min-w-[280px] w-[280px] rounded-lg border border-gray-200 bg-white"
           >
-            <div className="px-3.5 py-3">
-              <div className="h-3 w-20 rounded-md bg-gray-200/80" />
+            <div className="px-3 py-3">
+              <div className="h-2.5 w-16 rounded bg-gray-100" />
             </div>
             <div className="flex flex-col gap-2 px-2.5 pb-2.5">
               {Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="h-20 animate-pulse rounded-lg bg-white/80 shadow-sm" />
+                <div key={i} className="h-20 animate-pulse rounded-lg bg-gray-50" />
               ))}
             </div>
           </div>
@@ -192,15 +229,13 @@ export default function KanbanBoard({
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
     >
-      <div className="custom-scrollbar flex gap-4 overflow-x-auto pb-4">
-        <div className="flex gap-4">
+      <div className="custom-scrollbar flex gap-3 overflow-x-auto pb-4">
+        <div className="flex gap-3">
           {COLUMNS.map((col) => (
             <KanbanColumn
               key={col.status}
               status={col.status}
               label={col.label}
-              bg={col.bg}
-              tint={col.tint}
               issues={issuesByStatus[col.status] ?? []}
               onIssueClick={onIssueClick}
               onDelete={onDelete}
@@ -213,7 +248,7 @@ export default function KanbanBoard({
       <DragOverlay dropAnimation={null}>
         {activeIssue ? (
           <div className="w-[280px] opacity-95">
-            <IssueCard issue={activeIssue} onClick={() => {}} onDelete={onDelete} isDragging />
+            <IssueCard issue={activeIssue} onClick={() => {}} onDelete={handleOverlayDelete} isDragging />
           </div>
         ) : null}
       </DragOverlay>

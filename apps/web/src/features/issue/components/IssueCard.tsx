@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { Trash2 } from 'lucide-react'
@@ -18,13 +18,13 @@ import { Button } from '@/components/ui/button'
 
 const PRIORITY_CONFIG: Record<
   IssueType['priority'],
-  { label: string; className: string }
+  { label: string; dot: string }
 > = {
-  URGENT: { label: 'Urgent', className: 'bg-red-100 text-red-700' },
-  HIGH: { label: 'High', className: 'bg-orange-100 text-orange-700' },
-  MEDIUM: { label: 'Medium', className: 'bg-yellow-100 text-yellow-700' },
-  LOW: { label: 'Low', className: 'bg-blue-100 text-blue-700' },
-  NO_PRIORITY: { label: '—', className: 'bg-gray-100 text-gray-500' },
+  URGENT: { label: 'Urgent', dot: 'bg-red-400' },
+  HIGH: { label: 'High', dot: 'bg-orange-400' },
+  MEDIUM: { label: 'Medium', dot: 'bg-yellow-400' },
+  LOW: { label: 'Low', dot: 'bg-blue-400' },
+  NO_PRIORITY: { label: '', dot: '' },
 }
 
 interface IssueCardProps {
@@ -34,7 +34,7 @@ interface IssueCardProps {
   isDragging?: boolean
 }
 
-export default function IssueCard({ issue, onClick, onDelete, isDragging }: IssueCardProps) {
+const IssueCard = React.memo(function IssueCard({ issue, onClick, onDelete, isDragging }: IssueCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const { attributes, listeners, setNodeRef, transform, isDragging: dndDragging } = useDraggable({
     id: `issue-${issue.id}`,
@@ -57,10 +57,10 @@ export default function IssueCard({ issue, onClick, onDelete, isDragging }: Issu
       {...listeners}
       {...attributes}
       onClick={onClick}
-      className={`group relative cursor-pointer rounded-lg border bg-white p-3 transition-all duration-150 ${
+      className={`group relative cursor-pointer rounded-lg border bg-white p-3 transition-colors duration-150 ${
         dragging
-          ? 'border-indigo-300 shadow-lg ring-2 ring-indigo-500/20'
-          : 'border-gray-200 shadow-sm hover:border-gray-300 hover:shadow-md'
+          ? 'border-indigo-300 ring-1 ring-indigo-500/20'
+          : 'border-gray-200 hover:bg-gray-50'
       }`}
     >
       {/* Delete button — visible on hover */}
@@ -70,24 +70,27 @@ export default function IssueCard({ issue, onClick, onDelete, isDragging }: Issu
             e.stopPropagation()
             setShowDeleteDialog(true)
           }}
-          className="absolute top-2 right-2 rounded-md p-1 text-gray-300 opacity-0 transition-all duration-150 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
+          className="absolute top-2 right-2 rounded p-1 text-gray-300 opacity-0 transition-all duration-150 hover:bg-red-50 hover:text-red-400 group-hover:opacity-100"
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash2 className="h-3 w-3" />
         </button>
       )}
 
-      <h4 className="pr-6 text-sm font-medium text-gray-900 truncate">
+      <h4 className="pr-6 text-[13px] font-medium text-gray-900 truncate">
         {issue.title}
       </h4>
 
       {issue.description && (
-        <p className="mt-1 line-clamp-2 text-xs text-gray-400 leading-relaxed">{issue.description}</p>
+        <p className="mt-1 line-clamp-2 text-[11px] text-gray-400 leading-relaxed">{issue.description}</p>
       )}
 
-      <div className="mt-2.5 flex items-center gap-2">
-        <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${priority.className}`}>
-          {priority.label}
-        </span>
+      <div className="mt-2 flex items-center gap-2">
+        {priority.dot && (
+          <span className="flex items-center gap-1 text-[10px] text-gray-400">
+            <span className={`h-1.5 w-1.5 rounded-full ${priority.dot}`} />
+            {priority.label}
+          </span>
+        )}
         {issue.assigneeId && (
           <span className="text-[10px] text-gray-400">Assigned</span>
         )}
@@ -118,4 +121,6 @@ export default function IssueCard({ issue, onClick, onDelete, isDragging }: Issu
       </AlertDialog>
     </div>
   )
-}
+})
+
+export default IssueCard

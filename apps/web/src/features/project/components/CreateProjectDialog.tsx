@@ -1,5 +1,4 @@
 import { useState, useCallback, type FormEvent } from 'react'
-import { motion } from 'motion/react'
 import {
   Dialog,
   DialogContent,
@@ -76,13 +75,13 @@ export default function CreateProjectDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {(serverError || mutationError) && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
               {serverError || mutationError?.message}
             </div>
           )}
 
-          <div className="space-y-2">
-            <label htmlFor="project-name" className="text-sm font-medium text-gray-700">
+          <div className="space-y-1.5">
+            <label htmlFor="project-name" className="text-[13px] font-medium text-gray-600">
               Project name
             </label>
             <Input
@@ -95,9 +94,9 @@ export default function CreateProjectDialog({
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="project-description" className="text-sm font-medium text-gray-700">
-              Description <span className="text-gray-400">(optional)</span>
+          <div className="space-y-1.5">
+            <label htmlFor="project-description" className="text-[13px] font-medium text-gray-600">
+              Description <span className="text-gray-300">(optional)</span>
             </label>
             <Textarea
               id="project-description"
@@ -117,14 +116,9 @@ export default function CreateProjectDialog({
             >
               Cancel
             </Button>
-            <motion.div
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            >
-              <Button type="submit" disabled={isPending || !name.trim()}>
-                {isPending ? 'Creating…' : 'Create project'}
-              </Button>
-            </motion.div>
+            <Button type="submit" disabled={isPending || !name.trim()}>
+              {isPending ? 'Creating…' : 'Create project'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -25,27 +25,19 @@ import type { IssueType } from '@edgekit/shared'
 
 const STATUS_OPTIONS = [
   { value: 'BACKLOG', label: 'Backlog', dot: 'bg-gray-400' },
-  { value: 'TODO', label: 'Todo', dot: 'bg-blue-500' },
-  { value: 'IN_PROGRESS', label: 'In Progress', dot: 'bg-amber-500' },
-  { value: 'DONE', label: 'Done', dot: 'bg-green-500' },
-  { value: 'CANCELLED', label: 'Cancelled', dot: 'bg-red-500' },
+  { value: 'TODO', label: 'Todo', dot: 'bg-gray-500' },
+  { value: 'IN_PROGRESS', label: 'In Progress', dot: 'bg-amber-400' },
+  { value: 'DONE', label: 'Done', dot: 'bg-emerald-400' },
+  { value: 'CANCELLED', label: 'Cancelled', dot: 'bg-red-400' },
 ] as const
 
 const PRIORITY_OPTIONS = [
-  { value: 'NO_PRIORITY', label: 'No priority', dot: 'bg-gray-400' },
-  { value: 'LOW', label: 'Low', dot: 'bg-blue-500' },
-  { value: 'MEDIUM', label: 'Medium', dot: 'bg-yellow-500' },
-  { value: 'HIGH', label: 'High', dot: 'bg-orange-500' },
-  { value: 'URGENT', label: 'Urgent', dot: 'bg-red-500' },
+  { value: 'NO_PRIORITY', label: 'No priority', dot: '' },
+  { value: 'LOW', label: 'Low', dot: 'bg-blue-400' },
+  { value: 'MEDIUM', label: 'Medium', dot: 'bg-yellow-400' },
+  { value: 'HIGH', label: 'High', dot: 'bg-orange-400' },
+  { value: 'URGENT', label: 'Urgent', dot: 'bg-red-400' },
 ] as const
-
-const PRIORITY_COLORS: Record<string, string> = {
-  URGENT: 'bg-red-100 text-red-700',
-  HIGH: 'bg-orange-100 text-orange-700',
-  MEDIUM: 'bg-yellow-100 text-yellow-700',
-  LOW: 'bg-blue-100 text-blue-700',
-  NO_PRIORITY: 'bg-gray-100 text-gray-500',
-}
 
 interface IssueDetailPanelProps {
   issue: IssueType | undefined
@@ -126,7 +118,7 @@ export default function IssueDetailPanel({
         exit={{ opacity: 0 }}
         transition={{ duration: 0.15 }}
         onClick={onClose}
-        className="fixed inset-0 z-40 bg-black/30"
+        className="fixed inset-0 z-40 bg-black/20"
       />
 
       {/* Panel */}
@@ -135,7 +127,7 @@ export default function IssueDetailPanel({
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed right-0 top-0 z-50 flex h-full w-full max-w-lg flex-col border-l border-gray-200 bg-white shadow-xl"
+        className="fixed right-0 top-0 z-50 flex h-full w-full max-w-lg flex-col border-l border-gray-200 bg-white"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
@@ -153,11 +145,11 @@ export default function IssueDetailPanel({
                   }
                 }}
                 autoFocus
-                className="text-lg font-semibold"
+                className="text-base font-medium"
               />
             ) : (
               <h2
-                className="cursor-pointer truncate text-lg font-semibold text-gray-900 transition-colors hover:text-indigo-600"
+                className="cursor-pointer truncate text-base font-medium text-gray-900 transition-colors hover:text-indigo-600"
                 onClick={() => setEditingTitle(true)}
               >
                 {issue.title}
@@ -174,20 +166,20 @@ export default function IssueDetailPanel({
           <div className="space-y-5">
             {/* Status */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-500">
+              <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Status
               </label>
               <DropdownMenu>
                 <DropdownMenuTrigger render={<Button variant="outline" className="w-full justify-between" />}>
                   <span className="flex items-center gap-2">
-                    <span className={`h-2 w-2 rounded-full ${statusOption?.dot ?? 'bg-gray-400'}`} />
+                    <span className={`h-1.5 w-1.5 rounded-full ${statusOption?.dot ?? 'bg-gray-400'}`} />
                     {statusLabel}
                   </span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {STATUS_OPTIONS.map((opt) => (
                     <DropdownMenuItem key={opt.value} onClick={() => handleStatusChange(opt.value)}>
-                      <span className={`h-2 w-2 rounded-full ${opt.dot}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${opt.dot}`} />
                       {opt.label}
                     </DropdownMenuItem>
                   ))}
@@ -197,21 +189,22 @@ export default function IssueDetailPanel({
 
             {/* Priority */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-500">
+              <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Priority
               </label>
               <DropdownMenu>
                 <DropdownMenuTrigger render={<Button variant="outline" className="w-full justify-between" />}>
                   <span className="flex items-center gap-2">
-                    <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${PRIORITY_COLORS[issue.priority] ?? ''}`}>
-                      {priorityLabel}
-                    </span>
+                    {priorityOption?.dot ? (
+                      <span className={`h-1.5 w-1.5 rounded-full ${priorityOption.dot}`} />
+                    ) : null}
+                    {priorityLabel}
                   </span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {PRIORITY_OPTIONS.map((opt) => (
                     <DropdownMenuItem key={opt.value} onClick={() => handlePriorityChange(opt.value)}>
-                      <span className={`h-2 w-2 rounded-full ${opt.dot}`} />
+                      {opt.dot ? <span className={`h-1.5 w-1.5 rounded-full ${opt.dot}`} /> : null}
                       {opt.label}
                     </DropdownMenuItem>
                   ))}
@@ -221,7 +214,7 @@ export default function IssueDetailPanel({
 
             {/* Description */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-500">
+              <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Description
               </label>
               {editingDesc ? (
@@ -236,17 +229,17 @@ export default function IssueDetailPanel({
               ) : (
                 <div
                   onClick={() => setEditingDesc(true)}
-                  className="min-h-[80px] cursor-pointer rounded-lg border border-gray-200 bg-gray-50/80 p-3 text-sm text-gray-600 transition-all duration-150 hover:border-gray-300 hover:bg-white"
+                  className="min-h-[80px] cursor-pointer rounded-lg border border-gray-200 p-3 text-sm text-gray-600 transition-colors duration-150 hover:bg-gray-50"
                 >
                   {description || (
-                    <span className="italic text-gray-400">Click to add a description…</span>
+                    <span className="italic text-gray-300">Click to add a description…</span>
                   )}
                 </div>
               )}
             </div>
 
             {/* Metadata */}
-            <div className="rounded-lg border border-gray-100 bg-gray-50/80 p-3.5 text-xs text-gray-500">
+            <div className="rounded-lg border border-gray-100 p-3.5 text-xs text-gray-500">
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Created</span>
@@ -266,12 +259,12 @@ export default function IssueDetailPanel({
                   render={
                     <Button
                       variant="ghost"
-                      className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
+                      className="w-full justify-start text-gray-400 hover:text-red-500 hover:bg-red-50"
                     />
                   }
                 >
-                  <Trash2 className="h-4 w-4" />
-                  Delete Issue
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Delete issue
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

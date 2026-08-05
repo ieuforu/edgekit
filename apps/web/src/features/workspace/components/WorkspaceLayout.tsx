@@ -10,6 +10,8 @@ interface WorkspaceLayoutProps {
   user: { id: number; email: string; name: string }
   onLogout: () => void
   onSelectWorkspace: (workspaceId: number) => void
+  activeNav?: string
+  onNavigate?: (route: string) => void
   children: ReactNode
 }
 
@@ -19,16 +21,18 @@ export default function WorkspaceLayout({
   user,
   onLogout,
   onSelectWorkspace,
+  activeNav,
+  onNavigate,
   children,
 }: WorkspaceLayoutProps) {
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-[#f8f9fa]">
       {/* Sidebar */}
-      <WorkspaceSidebar workspaceName={workspace.name} />
+      <WorkspaceSidebar workspaceName={workspace.name} workspaceId={workspace.id} activeNav={activeNav} onNavigate={onNavigate} />
 
       {/* Main area */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Top header */}
+        {/* Top header — ultra minimal */}
         <header className="flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6">
           <div className="flex items-center gap-3">
             <WorkspaceSelector
@@ -39,20 +43,19 @@ export default function WorkspaceLayout({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700">
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-[11px] font-medium text-gray-500">
                 {user.name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
               </div>
-              <span className="hidden text-sm font-medium text-gray-600 sm:inline">
+              <span className="hidden text-xs text-gray-500 sm:inline">
                 {user.email}
               </span>
             </div>
-            <div className="h-5 w-px bg-gray-200" />
             <button
               onClick={onLogout}
-              className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-gray-400 transition-colors duration-150 hover:bg-gray-50 hover:text-gray-600"
             >
-              <LogOut className="h-3.5 w-3.5" />
+              <LogOut className="h-3 w-3" />
               Sign out
             </button>
           </div>

@@ -100,22 +100,22 @@ export default function IssuePage({ workspace }: IssuePageProps) {
   // No project selected — show project list
   if (!selectedProjectId) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{workspace.name}</h1>
-          <p className="mt-1 text-sm text-gray-500">Role: {workspace.role}</p>
+          <h1 className="text-lg font-semibold text-gray-900">{workspace.name}</h1>
+          <p className="mt-0.5 text-[13px] text-gray-400">Role: {workspace.role}</p>
         </div>
 
         <section>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Projects</h2>
+            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">Projects</h2>
             <Button onClick={() => setCreateOpen(true)}>
-              <Plus className="h-4 w-4" />
+              <Plus className="h-3.5 w-3.5" />
               New Project
             </Button>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-3">
             <ProjectList
               workspaceId={workspace.id!}
               onCreateClick={() => setCreateOpen(true)}
@@ -135,17 +135,17 @@ export default function IssuePage({ workspace }: IssuePageProps) {
 
   // Project selected — show Kanban
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon-sm" onClick={() => setSelectedProjectId(null)}>
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-3.5 w-3.5" />
           </Button>
-          <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
+          <h1 className="text-lg font-semibold text-gray-900">Issues</h1>
         </div>
         <Button onClick={() => setCreateIssueOpen(true)}>
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           New Issue
         </Button>
       </div>

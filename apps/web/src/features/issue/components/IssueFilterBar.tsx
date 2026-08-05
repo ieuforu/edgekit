@@ -48,8 +48,8 @@ export default function IssueFilterBar({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
-        <SlidersHorizontal className="h-3.5 w-3.5" />
+      <span className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-gray-400">
+        <SlidersHorizontal className="h-3 w-3" />
         Filters
       </span>
 
@@ -60,7 +60,7 @@ export default function IssueFilterBar({
             <Button
               variant="outline"
               size="sm"
-              className={statusFilter ? 'border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : ''}
+              className={statusFilter ? 'border-gray-300 text-gray-700' : ''}
             />
           }
         >
@@ -82,7 +82,7 @@ export default function IssueFilterBar({
             <Button
               variant="outline"
               size="sm"
-              className={priorityFilter ? 'border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : ''}
+              className={priorityFilter ? 'border-gray-300 text-gray-700' : ''}
             />
           }
         >
@@ -101,24 +101,24 @@ export default function IssueFilterBar({
       {hasFilters && (
         <div className="flex items-center gap-1.5">
           {statusFilter && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">
+            <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
               Status: {statusLabel}
               <button
                 onClick={() => onStatusChange(null)}
-                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-indigo-200"
+                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-gray-200"
               >
-                <X className="h-3 w-3" />
+                <X className="h-2.5 w-2.5" />
               </button>
             </span>
           )}
           {priorityFilter && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">
+            <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
               Priority: {priorityLabel}
               <button
                 onClick={() => onPriorityChange(null)}
-                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-indigo-200"
+                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-gray-200"
               >
-                <X className="h-3 w-3" />
+                <X className="h-2.5 w-2.5" />
               </button>
             </span>
           )}
@@ -126,7 +126,7 @@ export default function IssueFilterBar({
             variant="ghost"
             size="sm"
             onClick={() => { onStatusChange(null); onPriorityChange(null) }}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-400 hover:text-gray-600"
           >
             Clear all
           </Button>

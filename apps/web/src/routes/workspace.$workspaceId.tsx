@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { createFileRoute, Outlet, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Outlet, useRouter, useLocation } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth/hooks'
 import LoadingSkeleton from '@/components/layout/LoadingSkeleton'
 import WorkspaceLayout from '@/features/workspace/components/WorkspaceLayout'
@@ -14,6 +14,17 @@ function WorkspaceLayoutRoute() {
   const { workspaceId: workspaceIdParam } = Route.useParams()
   const workspaceId = Number(workspaceIdParam)
   const router = useRouter()
+  const location = useLocation()
+  
+  const activeNav = location.pathname.includes('/users') ? 'users' : 'projects'
+  
+  const handleNavigate = useCallback((route: string) => {
+    if (route === 'projects') {
+      router.navigate({ to: '/workspace/$workspaceId', params: { workspaceId: String(workspaceId) } })
+    } else if (route === 'users') {
+      router.navigate({ to: '/workspace/$workspaceId/users', params: { workspaceId: String(workspaceId) } })
+    }
+  }, [router, workspaceId])
   const { user, loading: authLoading, logout } = useAuth()
   const { data: workspaces = [], isLoading: wsLoading } = useWorkspaces()
 
@@ -71,6 +82,8 @@ function WorkspaceLayoutRoute() {
       user={user}
       onLogout={handleLogout}
       onSelectWorkspace={handleSelectWorkspace}
+      activeNav={activeNav}
+      onNavigate={handleNavigate}
     >
       <Outlet />
     </WorkspaceLayout>

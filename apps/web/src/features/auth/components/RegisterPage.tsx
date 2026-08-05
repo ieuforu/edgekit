@@ -2,7 +2,6 @@ import { useState, type FormEvent } from 'react'
 import { useAuth } from '@/features/auth/hooks'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Box } from 'lucide-react'
 
 interface RegisterPageProps {
   onSwitchToLogin: () => void
@@ -31,30 +30,27 @@ export default function RegisterPage({ onSwitchToLogin }: RegisterPageProps) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#f8f9fa] px-4">
       <div className="w-full max-w-sm">
         {/* Brand */}
         <div className="mb-8 flex flex-col items-center">
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500 shadow-sm">
-            <Box className="h-6 w-6 text-white" />
-          </div>
-          <h1 className="text-xl font-bold text-gray-900">EdgeKit</h1>
-          <p className="mt-1 text-sm text-gray-500">Create your account</p>
+          <h1 className="text-lg font-semibold text-gray-900">EdgeKit</h1>
+          <p className="mt-1 text-[13px] text-gray-400">Create your account</p>
         </div>
 
         {/* Card */}
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+          className="rounded-lg border border-gray-200 bg-white p-6"
         >
           {error && (
-            <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 ring-1 ring-red-200">
+            <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">
               {error}
             </div>
           )}
 
           <div className="mb-4">
-            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
+            <label htmlFor="name" className="mb-1.5 block text-[13px] font-medium text-gray-600">
               Name
             </label>
             <Input
@@ -69,7 +65,7 @@ export default function RegisterPage({ onSwitchToLogin }: RegisterPageProps) {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="mb-1.5 block text-[13px] font-medium text-gray-600">
               Email
             </label>
             <Input
@@ -83,7 +79,7 @@ export default function RegisterPage({ onSwitchToLogin }: RegisterPageProps) {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="mb-1.5 block text-[13px] font-medium text-gray-600">
               Password
             </label>
             <Input
@@ -109,7 +105,7 @@ export default function RegisterPage({ onSwitchToLogin }: RegisterPageProps) {
           </Button>
         </form>
 
-        <p className="mt-5 text-center text-sm text-gray-500">
+        <p className="mt-5 text-center text-[13px] text-gray-400">
           Already have an account?{' '}
           <button
             type="button"

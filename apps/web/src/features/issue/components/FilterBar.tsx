@@ -27,17 +27,17 @@ export default function FilterBar({
         <button
           key={filter.key}
           onClick={() => onChange(filter.key)}
-          className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
+          className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors duration-150 ${
             current === filter.key
-              ? 'bg-indigo-100 text-indigo-700 shadow-sm'
-              : 'bg-white text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              ? 'bg-gray-100 text-gray-700'
+              : 'bg-white text-gray-400 hover:bg-gray-50 hover:text-gray-600'
           }`}
           aria-pressed={current === filter.key}
         >
           {filter.label}
           <span
-            className={`inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-xs font-semibold ${
-              current === filter.key ? 'bg-indigo-200 text-indigo-800' : 'bg-gray-100 text-gray-500'
+            className={`inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-[10px] font-medium ${
+              current === filter.key ? 'bg-gray-200 text-gray-600' : 'bg-gray-100 text-gray-400'
             }`}
           >
             {filter.count}

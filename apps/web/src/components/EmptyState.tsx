@@ -4,10 +4,10 @@ interface EmptyStateProps {
 
 export default function EmptyState({ onCreateClick }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50/50 px-4 py-12 text-center sm:px-6 sm:py-16">
-      <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 sm:mb-6 sm:h-20 sm:w-20">
+    <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 px-4 py-12 text-center sm:px-6 sm:py-16">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 sm:mb-5">
         <svg
-          className="h-8 w-8 text-indigo-500 sm:h-10 sm:w-10"
+          className="h-5 w-5 text-gray-300"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
@@ -20,16 +20,16 @@ export default function EmptyState({ onCreateClick }: EmptyStateProps) {
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-lg font-semibold text-gray-900">No tasks yet</h3>
-      <p className="mb-5 max-w-sm text-sm text-gray-500 sm:mb-6">
+      <h3 className="mb-1.5 text-sm font-medium text-gray-700">No tasks yet</h3>
+      <p className="mb-5 max-w-sm text-[13px] text-gray-400 sm:mb-6">
         Get started by creating your first task. Stay organized and boost your productivity.
       </p>
       <button
         onClick={onCreateClick}
-        className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-[13px] font-medium text-white transition-colors duration-150 hover:bg-indigo-700"
       >
         <svg
-          className="h-4 w-4"
+          className="h-3.5 w-3.5"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={2}

@@ -1,5 +1,4 @@
 import { useState, useCallback, type FormEvent } from 'react'
-import { motion } from 'motion/react'
 import {
   Dialog,
   DialogContent,
@@ -84,13 +83,13 @@ export default function CreateWorkspaceDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {(serverError || mutationError) && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
               {serverError || mutationError?.message}
             </div>
           )}
 
-          <div className="space-y-2">
-            <label htmlFor="workspace-name" className="text-sm font-medium text-gray-700">
+          <div className="space-y-1.5">
+            <label htmlFor="workspace-name" className="text-[13px] font-medium text-gray-600">
               Workspace name
             </label>
             <Input
@@ -102,8 +101,8 @@ export default function CreateWorkspaceDialog({
               required
             />
             {name && (
-              <p className="text-xs text-gray-400">
-                Slug: <span className="font-mono text-gray-600">{slug}</span>
+              <p className="text-[11px] text-gray-400">
+                Slug: <span className="font-mono text-gray-500">{slug}</span>
               </p>
             )}
           </div>
@@ -117,14 +116,9 @@ export default function CreateWorkspaceDialog({
             >
               Cancel
             </Button>
-            <motion.div
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            >
-              <Button type="submit" disabled={isPending || !name.trim() || !slug}>
-                {isPending ? 'Creating…' : 'Create workspace'}
-              </Button>
-            </motion.div>
+            <Button type="submit" disabled={isPending || !name.trim() || !slug}>
+              {isPending ? 'Creating…' : 'Create workspace'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

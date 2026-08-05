@@ -90,8 +90,8 @@ export default function CreateIssueDialog({
 
           <div className="space-y-4 py-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Title <span className="text-red-500">*</span>
+              <label className="mb-1.5 block text-[13px] font-medium text-gray-600">
+                Title <span className="text-gray-300">*</span>
               </label>
               <Input
                 value={title}
@@ -103,7 +103,7 @@ export default function CreateIssueDialog({
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
+              <label className="mb-1.5 block text-[13px] font-medium text-gray-600">
                 Description
               </label>
               <Textarea
@@ -116,7 +116,7 @@ export default function CreateIssueDialog({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">Status</label>
+                <label className="mb-1.5 block text-[13px] font-medium text-gray-600">Status</label>
                 <DropdownMenu>
                   <DropdownMenuTrigger render={<Button variant="outline" type="button" className="w-full justify-between" />}>
                     {STATUS_OPTIONS.find((s) => s.value === status)?.label}
@@ -132,7 +132,7 @@ export default function CreateIssueDialog({
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">Priority</label>
+                <label className="mb-1.5 block text-[13px] font-medium text-gray-600">Priority</label>
                 <DropdownMenu>
                   <DropdownMenuTrigger render={<Button variant="outline" type="button" className="w-full justify-between" />}>
                     {PRIORITY_OPTIONS.find((p) => p.value === priority)?.label}

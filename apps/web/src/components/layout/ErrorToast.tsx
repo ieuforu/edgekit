@@ -13,10 +13,10 @@ export default function ErrorToast({ message, onDismiss }: ErrorToastProps) {
 
   return (
     <div className="pointer-events-none fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-5 sm:bottom-6 sm:right-6">
-      <div className="pointer-events-auto flex items-start gap-3 rounded-xl border border-red-200 bg-white px-4 py-3 shadow-lg transition-all duration-200">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-100">
+      <div className="pointer-events-auto flex items-start gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 transition-all duration-200">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-50">
           <svg
-            className="h-4 w-4 text-red-600"
+            className="h-3.5 w-3.5 text-red-400"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={2}
@@ -30,15 +30,15 @@ export default function ErrorToast({ message, onDismiss }: ErrorToastProps) {
           </svg>
         </div>
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-900">Error</p>
-          <p className="text-sm text-gray-500">{message}</p>
+          <p className="text-[13px] font-medium text-gray-700">Error</p>
+          <p className="text-[12px] text-gray-400">{message}</p>
         </div>
         <button
           onClick={onDismiss}
-          className="shrink-0 rounded p-1 text-gray-400 transition-colors duration-200 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+          className="shrink-0 rounded p-1 text-gray-300 transition-colors duration-150 hover:text-gray-500"
         >
           <svg
-            className="h-4 w-4"
+            className="h-3.5 w-3.5"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={2}
