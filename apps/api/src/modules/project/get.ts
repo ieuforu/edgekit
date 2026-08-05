@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm'
 import { createDb } from '../../db'
 import { projects } from '../../db/schema'
 import type { AppContext } from '../../types'
-import { getWorkspaceIdFromProject, checkWorkspaceMembership } from '../auth/workspace-auth'
+import { checkWorkspaceMembership } from '../auth/workspace-auth'
 
 export class ProjectGet extends OpenAPIRoute {
   schema = {

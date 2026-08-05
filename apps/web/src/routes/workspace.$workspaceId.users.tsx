@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import UsersPage from '@/features/users/UsersPage'
 import UserDetailPage from '@/features/users/UserDetailPage'

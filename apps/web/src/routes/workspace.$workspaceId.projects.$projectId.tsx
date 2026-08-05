@@ -8,7 +8,7 @@ import IssueDetailPanel from '@/features/issue/components/IssueDetailPanel'
 import CreateIssueDialog from '@/features/issue/components/CreateIssueDialog'
 import LoadingSkeleton from '@/components/layout/LoadingSkeleton'
 import { useWorkspaces } from '@/features/workspace/hooks'
-import { useIssues, useCreateIssue, useUpdateIssue, useDeleteIssue } from '@/features/issue/hooks'
+import { useIssues, useUpdateIssue, useDeleteIssue } from '@/features/issue/hooks'
 
 export const Route = createFileRoute('/workspace/$workspaceId/projects/$projectId')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -33,7 +33,6 @@ function KanbanRoute() {
   const [createIssueOpen, setCreateIssueOpen] = useState(false)
 
   const { data: workspaces = [], isLoading: wsLoading } = useWorkspaces()
-  const workspace = workspaces.find((w) => w.id === workspaceId)
 
   const filters = useMemo(
     () => ({
@@ -45,7 +44,6 @@ function KanbanRoute() {
   )
 
   const { data: issues, isLoading } = useIssues(filters)
-  const createIssueMutation = useCreateIssue(filters)
   const updateIssueMutation = useUpdateIssue(filters)
   const deleteIssueMutation = useDeleteIssue(filters)
 
@@ -78,7 +76,10 @@ function KanbanRoute() {
   )
 
   const handleUpdateIssue = useCallback(
-    (issueId: number, data: { title?: string; description?: string; status?: string; priority?: string }) => {
+    (
+      issueId: number,
+      data: { title?: string; description?: string; status?: string; priority?: string },
+    ) => {
       updateIssueMutation.mutate({ issueId, ...data })
     },
     [updateIssueMutation],
@@ -106,7 +107,12 @@ function KanbanRoute() {
       <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.navigate({ to: '/workspace/$workspaceId', params: { workspaceId: String(workspaceId) } })}
+            onClick={() =>
+              router.navigate({
+                to: '/workspace/$workspaceId',
+                params: { workspaceId: String(workspaceId) },
+              })
+            }
             className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
           >
             <ArrowLeft className="h-5 w-5" />

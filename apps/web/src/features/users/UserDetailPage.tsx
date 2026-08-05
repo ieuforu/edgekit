@@ -1,13 +1,25 @@
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, MapPin, Calendar, Building2, Shield, Clock } from 'lucide-react'
-import { fetchUser, type User } from './mock'
+import { fetchUser } from './mock'
 
-function InfoRow({ icon: Icon, label, value, capitalize }: { icon: React.ElementType; label: string; value: string; capitalize?: boolean }) {
+function InfoRow({
+  icon: Icon,
+  label,
+  value,
+  capitalize,
+}: {
+  icon: React.ElementType
+  label: string
+  value: string
+  capitalize?: boolean
+}) {
   return (
     <div className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white px-5 py-3">
       <Icon className="h-3.5 w-3.5 shrink-0 text-gray-300" strokeWidth={1.5} />
       <span className="w-24 shrink-0 text-[12px] text-gray-400">{label}</span>
-      <span className={`flex-1 text-right text-[13px] font-medium text-gray-700 ${capitalize ? 'capitalize' : ''}`}>
+      <span
+        className={`flex-1 text-right text-[13px] font-medium text-gray-700 ${capitalize ? 'capitalize' : ''}`}
+      >
         {value}
       </span>
     </div>
@@ -42,7 +54,11 @@ function formatDate(d: string) {
 }
 
 export default function UserDetailPage({ userId, onBack }: { userId: number; onBack: () => void }) {
-  const { data: user, isLoading, error } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => Promise.resolve(fetchUser(userId)),
     staleTime: 60_000,

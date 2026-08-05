@@ -5,7 +5,6 @@ import { Trash2 } from 'lucide-react'
 import type { IssueType } from '@edgekit/shared'
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -16,10 +15,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
-const PRIORITY_CONFIG: Record<
-  IssueType['priority'],
-  { label: string; dot: string }
-> = {
+const PRIORITY_CONFIG: Record<IssueType['priority'], { label: string; dot: string }> = {
   URGENT: { label: 'Urgent', dot: 'bg-red-400' },
   HIGH: { label: 'High', dot: 'bg-orange-400' },
   MEDIUM: { label: 'Medium', dot: 'bg-yellow-400' },
@@ -34,9 +30,20 @@ interface IssueCardProps {
   isDragging?: boolean
 }
 
-const IssueCard = React.memo(function IssueCard({ issue, onClick, onDelete, isDragging }: IssueCardProps) {
+const IssueCard = React.memo(function IssueCard({
+  issue,
+  onClick,
+  onDelete,
+  isDragging,
+}: IssueCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const { attributes, listeners, setNodeRef, transform, isDragging: dndDragging } = useDraggable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging: dndDragging,
+  } = useDraggable({
     id: `issue-${issue.id}`,
     data: { issue },
   })
@@ -76,12 +83,12 @@ const IssueCard = React.memo(function IssueCard({ issue, onClick, onDelete, isDr
         </button>
       )}
 
-      <h4 className="pr-6 text-[13px] font-medium text-gray-900 truncate">
-        {issue.title}
-      </h4>
+      <h4 className="pr-6 text-[13px] font-medium text-gray-900 truncate">{issue.title}</h4>
 
       {issue.description && (
-        <p className="mt-1 line-clamp-2 text-[11px] text-gray-400 leading-relaxed">{issue.description}</p>
+        <p className="mt-1 line-clamp-2 text-[11px] text-gray-400 leading-relaxed">
+          {issue.description}
+        </p>
       )}
 
       <div className="mt-2 flex items-center gap-2">
@@ -91,9 +98,7 @@ const IssueCard = React.memo(function IssueCard({ issue, onClick, onDelete, isDr
             {priority.label}
           </span>
         )}
-        {issue.assigneeId && (
-          <span className="text-[10px] text-gray-400">Assigned</span>
-        )}
+        {issue.assigneeId && <span className="text-[10px] text-gray-400">Assigned</span>}
       </div>
 
       {/* Delete confirmation dialog */}
