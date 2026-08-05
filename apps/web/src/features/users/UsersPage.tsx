@@ -16,7 +16,7 @@ function StatusIndicator({ status }: { status: string }) {
   const c = config[status] ?? config.inactive
 
   return (
-    <span className="inline-flex items-center gap-1.5 text-[11px] text-gray-500 capitalize">
+    <span className="inline-flex w-24 shrink-0 items-center gap-1.5 text-[11px] text-gray-500 capitalize">
       <span className={`h-1.5 w-1.5 rounded-full ${c.dot}`} />
       {status}
     </span>
@@ -161,20 +161,20 @@ export default function UsersPage({ onUserClick }: { onUserClick?: (userId: numb
 
                     {/* Name + email */}
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-medium text-gray-900 leading-tight">{user.name}</p>
+                      <p className="truncate text-[13px] font-medium text-gray-900 leading-tight">
+                        {user.name}
+                      </p>
                       <p className="mt-0.5 truncate text-[11px] text-gray-400">{user.email}</p>
                     </div>
 
                     {/* Department */}
-                    <div className="hidden w-28 shrink-0 text-[12px] text-gray-400 md:block">
-                      {user.department}
-                    </div>
+                    <div className="w-32 shrink-0 text-[12px] text-gray-400">{user.department}</div>
 
                     {/* Status */}
                     <StatusIndicator status={user.status} />
 
                     {/* Role */}
-                    <div className="hidden w-16 text-right text-[11px] text-gray-400 capitalize sm:block">
+                    <div className="w-20 shrink-0 text-[11px] text-gray-400 capitalize">
                       {user.role}
                     </div>
                   </div>
