@@ -15,18 +15,18 @@ import type { IssueType } from '@edgekit/shared'
 
 export type IssueStatus = IssueType['status']
 
-const COLUMNS: { status: IssueStatus; label: string; bg: string }[] = [
-  { status: 'BACKLOG', label: 'Backlog', bg: 'bg-gray-50' },
-  { status: 'TODO', label: 'Todo', bg: 'bg-blue-50' },
-  { status: 'IN_PROGRESS', label: 'In Progress', bg: 'bg-amber-50' },
-  { status: 'DONE', label: 'Done', bg: 'bg-green-50' },
-  { status: 'CANCELLED', label: 'Cancelled', bg: 'bg-red-50' },
+const COLUMNS: { status: IssueStatus; label: string; tint: string }[] = [
+  { status: 'BACKLOG', label: 'Backlog', tint: 'bg-gray-50/80' },
+  { status: 'TODO', label: 'Todo', tint: 'bg-blue-50/60' },
+  { status: 'IN_PROGRESS', label: 'In Progress', tint: 'bg-amber-50/60' },
+  { status: 'DONE', label: 'Done', tint: 'bg-green-50/60' },
+  { status: 'CANCELLED', label: 'Cancelled', tint: 'bg-red-50/60' },
 ]
 
 function KanbanColumn({
   status,
   label,
-  bg,
+  tint,
   issues,
   onIssueClick,
   onDelete,
@@ -34,7 +34,7 @@ function KanbanColumn({
 }: {
   status: IssueStatus
   label: string
-  bg: string
+  tint: string
   issues: IssueType[]
   onIssueClick: (id: number) => void
   onDelete?: (issueId: number) => void
@@ -45,21 +45,24 @@ function KanbanColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`flex min-w-[260px] flex-1 flex-col rounded-xl border transition-colors ${
+      className={`flex min-w-[280px] flex-1 flex-col rounded-xl border transition-all duration-150 ${
         isOver
-          ? 'border-indigo-300 bg-indigo-50/50'
-          : `border-gray-200 ${bg}`
+          ? 'border-indigo-300 bg-indigo-50/50 shadow-sm'
+          : `border-gray-200/80 ${tint}`
       }`}
     >
-      <div className="flex items-center justify-between px-3 py-2.5">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-600">
+      {/* Column header */}
+      <div className="flex items-center justify-between px-3.5 py-3">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
           {label}
         </h3>
-        <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-gray-200 px-1.5 text-[10px] font-semibold text-gray-600">
+        <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-gray-200/80 px-1.5 text-[10px] font-semibold text-gray-500">
           {issues.length}
         </span>
       </div>
-      <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2">
+
+      {/* Cards container — scrollable */}
+      <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-2.5 pb-2.5">
         {issues.map((issue) => (
           <IssueCard
             key={issue.id}
@@ -68,6 +71,12 @@ function KanbanColumn({
             onDelete={onDelete}
           />
         ))}
+
+        {issues.length === 0 && (
+          <div className="flex flex-1 items-center justify-center py-8 text-xs text-gray-400">
+            No issues
+          </div>
+        )}
       </div>
     </div>
   )
@@ -123,12 +132,10 @@ export default function KanbanBoard({
     const issueId = Number((active.id as string).replace('issue-', ''))
     const overId = over.id as string
 
-    // Dropped on a column
     let newStatus: string | null = null
     if (overId.startsWith('column-')) {
       newStatus = overId.replace('column-', '')
     } else if (overId.startsWith('issue-')) {
-      // Dropped on another issue — find which column that issue belongs to
       const overIssue = issues.find((i) => i.id !== undefined && `issue-${i.id}` === overId)
       if (overIssue) newStatus = overIssue.status
     }
@@ -157,13 +164,13 @@ export default function KanbanBoard({
     return (
       <div className="flex gap-4 overflow-x-auto pb-4">
         {COLUMNS.map((col) => (
-          <div key={col.status} className={`min-w-[260px] flex-1 rounded-xl border border-gray-200 ${col.bg}`}>
-            <div className="px-3 py-2.5">
-              <div className="h-3 w-20 rounded bg-gray-200" />
+          <div key={col.status} className={`min-w-[280px] flex-1 rounded-xl border border-gray-200/80 ${col.tint}`}>
+            <div className="px-3.5 py-3">
+              <div className="h-3 w-20 rounded-md bg-gray-200/80" />
             </div>
-            <div className="flex flex-col gap-2 px-2 pb-2">
+            <div className="flex flex-col gap-2 px-2.5 pb-2.5">
               {Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="h-16 animate-pulse rounded-lg bg-gray-100" />
+                <div key={i} className="h-20 animate-pulse rounded-lg bg-white/80 shadow-sm" />
               ))}
             </div>
           </div>
@@ -186,7 +193,7 @@ export default function KanbanBoard({
             key={col.status}
             status={col.status}
             label={col.label}
-            bg={col.bg}
+            tint={col.tint}
             issues={issuesByStatus[col.status] ?? []}
             onIssueClick={onIssueClick}
             onDelete={onDelete}
@@ -197,8 +204,8 @@ export default function KanbanBoard({
 
       <DragOverlay dropAnimation={null}>
         {activeIssue ? (
-          <div className="w-[260px] opacity-90">
-            <IssueCard issue={activeIssue} onClick={() => {}} onDelete={onDelete} />
+          <div className="w-[280px] opacity-95">
+            <IssueCard issue={activeIssue} onClick={() => {}} onDelete={onDelete} isDragging />
           </div>
         ) : null}
       </DragOverlay>

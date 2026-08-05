@@ -26,13 +26,6 @@
     Consistent use of Tailwind's 4px grid (p-1 = 4px, p-2 = 8px, etc.)
 */
 
-/* Smooth transitions for all interactive elements */
-*,
-*::before,
-*::after {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: 'Inter Variable', sans-serif;
@@ -77,38 +70,50 @@
 }
 
 :root {
+  /* Background */
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.175 0.015 250);
+  /* Card */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.175 0.015 250);
+  /* Popover */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.175 0.015 250);
+  /* Primary — indigo accent */
+  --primary: oklch(0.546 0.245 264.376);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Secondary */
+  --secondary: oklch(0.965 0.005 250);
+  --secondary-foreground: oklch(0.175 0.015 250);
+  /* Muted */
+  --muted: oklch(0.965 0.005 250);
+  --muted-foreground: oklch(0.50 0.010 250);
+  /* Accent */
+  --accent: oklch(0.965 0.005 250);
+  --accent-foreground: oklch(0.175 0.015 250);
+  /* Destructive */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  /* Border / Input / Ring */
+  --border: oklch(0.920 0.005 250);
+  --input: oklch(0.920 0.005 250);
+  --ring: oklch(0.546 0.245 264.376);
+  /* Chart colors */
+  --chart-1: oklch(0.546 0.245 264.376);
+  --chart-2: oklch(0.696 0.170 162.48);
+  --chart-3: oklch(0.768 0.185 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  /* Radius */
+  --radius: 0.5rem;
+  /* Sidebar — dark */
+  --sidebar: oklch(0.165 0.020 250);
+  --sidebar-foreground: oklch(0.900 0.005 250);
+  --sidebar-primary: oklch(0.546 0.245 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-accent: oklch(0.210 0.020 250);
+  --sidebar-accent-foreground: oklch(0.920 0.005 250);
+  --sidebar-border: oklch(0.240 0.020 250);
+  --sidebar-ring: oklch(0.546 0.245 264.376);
 }
 
 .dark {
@@ -150,7 +155,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
   html {
     @apply font-sans;

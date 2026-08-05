@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, isRedirect } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth/hooks'
 import LoginPage from '@/features/auth/components/LoginPage'
 import RegisterPage from '@/features/auth/components/RegisterPage'
@@ -10,23 +10,24 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'motion/react'
 
 export const Route = createFileRoute('/')({
-  loader: async () => {
+  beforeLoad: async () => {
     try {
       const meRes = await fetch('/api/auth/me')
       if (!meRes.ok) return // not logged in — show login page
+
       const wsRes = await fetch('/api/workspaces')
       if (!wsRes.ok) return
-      const data = await wsRes.json()
+      const data: { workspaces?: Array<{ id: number }> } = await wsRes.json()
+
       if (data.workspaces && data.workspaces.length > 0) {
         throw redirect({
           to: '/workspace/$workspaceId',
           params: { workspaceId: String(data.workspaces[0].id) },
         })
       }
-    } catch (e: any) {
-      // Re-throw actual redirects so TanStack Router processes them
-      if (e?.isRedirect) throw e
-      // Swallow other errors — fall through to render the component
+    } catch (error) {
+      if (isRedirect(error)) throw error
+      // Other errors — fall through to render component
     }
   },
   component: IndexPage,
@@ -39,7 +40,6 @@ function IndexPage() {
 
   const { data: workspaces = [], isLoading: wsLoading } = useWorkspaces()
 
-  // 1. Auth loading
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -48,7 +48,6 @@ function IndexPage() {
     )
   }
 
-  // 2. Not logged in
   if (!user) {
     return authPage === 'login' ? (
       <LoginPage onSwitchToRegister={() => setAuthPage('register')} />
@@ -57,7 +56,6 @@ function IndexPage() {
     )
   }
 
-  // 3. Loading workspaces
   if (wsLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -66,7 +64,14 @@ function IndexPage() {
     )
   }
 
-  // 4. No workspaces → show create screen
+  if (workspaces.length > 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <LoadingSkeleton />
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <motion.div

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { motion } from 'motion/react'
 import WorkspaceSidebar from '@/features/workspace/components/WorkspaceSidebar'
 import { WorkspaceSelector } from '@/features/workspace/components/WorkspaceSelector'
 import type { WorkspaceListItem } from '@/features/workspace/hooks'
+import { LogOut } from 'lucide-react'
 
 interface WorkspaceLayoutProps {
   workspace: WorkspaceListItem
@@ -29,7 +29,7 @@ export default function WorkspaceLayout({
       {/* Main area */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top header */}
-        <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6">
           <div className="flex items-center gap-3">
             <WorkspaceSelector
               workspaces={workspaces}
@@ -39,20 +39,22 @@ export default function WorkspaceLayout({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-600">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700">
                 {user.name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
               </div>
-              <span className="hidden text-sm text-gray-600 sm:inline">{user.email}</span>
+              <span className="hidden text-sm font-medium text-gray-600 sm:inline">
+                {user.email}
+              </span>
             </div>
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            <div className="h-5 w-px bg-gray-200" />
+            <button
               onClick={onLogout}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
             >
+              <LogOut className="h-3.5 w-3.5" />
               Sign out
-            </motion.button>
+            </button>
           </div>
         </header>
 
