@@ -22,13 +22,26 @@
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "deploy:api": "pnpm --filter api deploy",
+    "deploy:web": "pnpm --filter web build",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
+    "@types/better-sqlite3": "^9.6.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "better-sqlite3": "^13.0.3",
     "husky": "^9.1.7",
+    "jsdom": "^30.0.1",
     "lint-staged": "^17.3.0",
     "oxfmt": "^0.61.0",
-    "oxlint": "^1.76.0"
+    "oxlint": "^1.76.0",
+    "vitest": "^4.1.10"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

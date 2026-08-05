@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Lint & Type Check & Build
+    name: Lint, Type Check, Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -35,8 +35,17 @@ jobs:
       - name: Format check
         run: pnpm fmt:check
 
-      - name: Type check (web)
-        run: pnpm --filter web exec tsc --noEmit
+      - name: Type check (all packages)
+        run: pnpm typecheck
+
+      - name: Test (shared)
+        run: pnpm --filter @edgekit/shared test
+
+      - name: Test (api)
+        run: pnpm --filter api test
+
+      - name: Test (web)
+        run: pnpm --filter web test
 
       - name: Build (web)
         run: pnpm --filter web build

@@ -2,18 +2,18 @@
 
 ## 当前进度
 
-| Phase                     | 状态      | 说明                                           |
-| ------------------------- | --------- | ---------------------------------------------- |
-| Phase 0: 项目基线         | ✅ 完成   | Auth + Task CRUD + README                      |
-| Phase 1: 数据库模型升级   | ✅ 完成   | 新增 workspace/project/issue 表                |
-| Phase 2: Backend API 重构 | ✅ 完成   | 14 个 API 端点 + 模块化结构                    |
-| Phase 3: RBAC 权限系统    | ✅ 完成   | can() 抽象 + 中间件 + 成员管理 + 前端 Can 组件 |
-| Phase 4: React 架构升级   | ⏳ 待开始 | Feature-based 模块化 + shadcn/ui               |
-| Phase 5: TanStack Query   | ⏳ 待开始 |                                                |
-| Phase 6: 高级交互         | ⏳ 待开始 |                                                |
-| Phase 7: React 性能优化   | ⏳ 待开始 |                                                |
-| Phase 8: 工程化           | ⏳ 待开始 |                                                |
-| Phase 9: 生产部署         | ⏳ 待开始 |                                                |
+| Phase                     | 状态    | 说明                                           |
+| ------------------------- | ------- | ---------------------------------------------- |
+| Phase 0: 项目基线         | ✅ 完成 | Auth + Task CRUD + README                      |
+| Phase 1: 数据库模型升级   | ✅ 完成 | 新增 workspace/project/issue 表                |
+| Phase 2: Backend API 重构 | ✅ 完成 | 14 个 API 端点 + 模块化结构                    |
+| Phase 3: RBAC 权限系统    | ✅ 完成 | can() 抽象 + 中间件 + 成员管理 + 前端 Can 组件 |
+| Phase 4: React 架构升级   | ✅ 完成 | Feature-based 模块化 + shadcn/ui               |
+| Phase 5: TanStack Query   | ✅ 完成 | Server State 统一管理                          |
+| Phase 6: 高级交互         | ✅ 完成 | Kanban + Issue Detail + Filtering              |
+| Phase 7: React 性能优化   | ✅ 完成 | 虚拟化 + memo/useMemo/useCallback              |
+| Phase 8: 工程化           | ✅ 完成 | Testing + CI + Type Safety                     |
+| Phase 9: 生产部署         | ✅ 完成 | Cloudflare Workers + Pages + D1 Migration      |
 
 ---
 
@@ -605,3 +605,80 @@ Issue 详情 → ?issueId=123
 
 设计系统、侧边栏、Header、Project 卡片、Kanban 列、Issue 卡片、
 Detail Panel、Filter Bar、登录/注册、Users 页面、所有 shadcn 组件
+
+---
+
+## Phase 8: 工程化
+
+**日期**：2026-08-05
+
+### 8.1 TypeScript Strict Mode
+
+- Web 端启用 `strict: true` + `noUncheckedIndexedAccess`
+- API + shared 已有 strict，现在全项目一致
+
+### 8.2 Vitest 测试框架
+
+- 安装 vitest、@testing-library/react、@testing-library/jest-dom、jsdom
+- 三个 vitest.config.ts：web (jsdom)、api (node)、shared (node)
+- 测试脚本：`pnpm test`（全量）、各包独立运行
+
+### 8.3 测试覆盖（60 → 88 tests）
+
+**Shared（33 tests）**：
+
+- RBAC 权限矩阵：20 tests（角色层级、权限边界、未知权限）
+- Zod Schemas：13 tests（枚举验证、Auth schema、实体 schema）
+
+**API（35 tests）**：
+
+- Auth 完整流程：14 tests（注册→登录→me→logout、cookie auth、验证）
+- Database CRUD：14 tests（workspace/project/issue 增删改查、数据隔离）
+- Route 基础：7 tests（health check、auth 路由、protected 路由）
+
+**Frontend（20 tests）**：
+
+- Button 组件：8 tests（渲染、点击、disabled、variants、className）
+- cn() 工具：7 tests（合并、条件、Tailwind 冲突）
+- Issue hooks：5 tests（query key factory）
+
+### 8.4 CI 更新
+
+- lint → format → typecheck → test (shared/api/web) → build
+- 新增 deploy.yml：push to main 自动部署
+- 新增 migrate.yml：schema 变更自动 apply D1 migrations
+
+### 8.5 测试辅助工具
+
+- `apps/api/src/__tests__/helpers.ts`
+- `createTestDb()` — better-sqlite3 内存数据库 + 完整 schema
+- `seedUser()` / `seedWorkspace()` / `seedProject()` / `seedIssue()`
+- `vi.mock("../db")` 拦截 createDb，注入测试数据库
+
+---
+
+## Phase 9: 部署配置
+
+**日期**：2026-08-05
+
+### 9.1 GitHub Actions 部署工作流
+
+- `.github/workflows/deploy.yml` — API (Workers) + Frontend (Pages)
+- `.github/workflows/migrate.yml` — D1 数据库迁移（schema 变更触发 + 手动触发）
+
+### 9.2 部署脚本
+
+- `pnpm deploy:api` — Cloudflare Workers 部署
+- `pnpm deploy:web` — 前端构建
+- `pnpm --filter api db:migrate:remote` — 远程 D1 迁移
+
+### 9.3 部署前提
+
+- GitHub Secrets：CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID
+- wrangler.jsonc 已配置 D1 database_id
+
+---
+
+## 项目完成
+
+所有 Phase 0-9 已完成。EdgeKit 从简单任务管理应用升级为完整的 Linear Mini 风格多租户 SaaS 项目管理系统。

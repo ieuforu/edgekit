@@ -141,12 +141,77 @@ edgekit/
 ## Development
 
 ```bash
-pnpm dev          # API + Frontend in parallel
-pnpm dev:web      # Frontend only
-pnpm dev:api      # Backend only
-pnpm typecheck    # TypeScript type checking
-pnpm lint         # OxLint
-pnpm fmt          # Oxfmt
+pnpm dev              # API + Frontend in parallel
+pnpm dev:web          # Frontend only
+pnpm dev:api          # Backend only
+pnpm typecheck        # TypeScript type checking
+pnpm lint             # OxLint
+pnpm fmt              # Oxfmt
+pnpm test             # Run all tests (shared + api + web)
+```
+
+### Testing
+
+The project uses **Vitest** with **React Testing Library** for comprehensive test coverage.
+
+```bash
+pnpm test                        # Run all tests
+pnpm --filter @edgekit/shared test  # Shared package tests only
+pnpm --filter api test            # API tests only
+pnpm --filter web test            # Frontend tests only
+```
+
+**Test coverage:**
+
+- **Shared**: RBAC permissions (20 tests), Zod schemas (13 tests)
+- **API**: Auth flow (14 tests), Database CRUD (14 tests), Route basics (7 tests)
+- **Frontend**: Button component (8 tests), Utility functions (7 tests), Query hooks (5 tests)
+
+### Database
+
+```bash
+# Apply migrations locally
+pnpm --filter api db:migrate:local
+
+# Apply migrations to remote D1
+pnpm --filter api db:migrate:remote
+
+# Generate new migration from schema changes
+pnpm --filter api db:generate
+
+# Push schema directly to local D1 (dev shortcut)
+pnpm --filter api db:push
+```
+
+## Deployment
+
+### Prerequisites
+
+Set the following GitHub repository secrets:
+
+- `CLOUDFLARE_API_TOKEN` — Cloudflare API token with Workers & Pages permissions
+- `CLOUDFLARE_ACCOUNT_ID` — Your Cloudflare account ID
+
+### Automatic Deployment
+
+Push to `main` branch. GitHub Actions will:
+
+1. Run CI checks (lint, typecheck, test, build)
+2. Deploy API to Cloudflare Workers
+3. Deploy frontend to Cloudflare Pages
+4. Apply DB migrations when schema changes (separate workflow)
+
+### Manual Deployment
+
+```bash
+# Deploy API (Cloudflare Workers)
+pnpm deploy:api
+
+# Build frontend
+pnpm deploy:web
+
+# Deploy frontend manually via Wrangler
+cd apps/web && npx wrangler pages deploy dist --project-name=edgekit-web
 ```
 
 ## Roadmap
@@ -161,8 +226,8 @@ See [docs/TodoList.md](docs/TodoList.md) for the full development plan.
 - [x] Phase 5: TanStack Query integration
 - [x] Phase 6: Advanced interactions
 - [x] Phase 7: React performance optimization
-- [ ] Phase 8: Engineering best practices
-- [ ] Phase 9: Deployment
+- [x] Phase 8: Engineering best practices
+- [x] Phase 9: Deployment
 
 ## License
 
