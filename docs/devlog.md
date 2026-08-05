@@ -427,3 +427,50 @@ export const workspaceKeys = {
 - 修复上述已知问题
 - 完善 URL State 集成（workspaceId + projectId + filters 全部走 URL）
 - Phase 7: React 性能优化
+
+---
+
+## Phase 6 续: 路由重构 + UI 打磨 + Bug 修复
+
+**日期**：2026-08-05
+
+### 路由重构
+
+完整路由结构：
+```
+/auth/login          → LoginPage
+/auth/register       → RegisterPage
+/                    → beforeLoad 重定向
+/workspace/$wid      → Layout (sidebar + header + Outlet)
+/workspace/$wid/     → ProjectList (默认)
+/workspace/$wid/projects/$pid → KanbanBoard
+Issue 详情 → search params ?issueId=123
+```
+
+关键修复：
+- `throw redirect()` 在 catch 块里被吞 → 用 `isRedirect()` 函数正确检测
+- `loader` 改为 `beforeLoad` 做认证检查（后来又移除了 beforeLoad 的 auth 检查）
+- 登录/登出后用 `window.location.href = '/'` 强刷触发路由重匹配
+- `_index` 文件名改为 `index` 生成正确的子路由路径
+
+### UI 打磨
+
+- Inter 字体接入
+- CSS 变量全面更新（indigo 主色、浅色侧边栏）
+- Sidebar: 浅色背景 + lucide 图标 + indigo active 高亮
+- Project 卡片: hover 微上浮、删除按钮重新定位
+- Kanban 列: tinted 背景色、空列提示
+- Issue Detail Panel: 状态/优先级颜色指示器
+- 登录/注册: 居中卡片设计
+
+### 性能优化
+
+- QueryClient: `refetchOnMount: false`, `gcTime: 30分钟`
+- 移除 `beforeLoad` 里的 raw fetch `/api/workspaces/:id`
+- Workspace 数据全走 React Query cache
+
+### 已知问题（仍待修复）
+
+- Issue 创建后列表刷新偶发失败
+- AlertDialog 事件冒泡（ProjectCard）
+- 部分 UI 细节仍需打磨
