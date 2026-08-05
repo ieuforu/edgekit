@@ -2,6 +2,20 @@
 
 A full-stack project management platform built with React, Hono and Cloudflare Workers.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshot/preview_1.png" alt="Login" width="720" />
+</p>
+
+<p align="center">
+  <img src="screenshot/preview_2.png" alt="Workspace" width="720" />
+</p>
+
+<p align="center">
+  <img src="screenshot/preview_3.png" alt="Kanban Board" width="720" />
+</p>
+
 ## Tech Stack
 
 ### Frontend (`apps/web`)
